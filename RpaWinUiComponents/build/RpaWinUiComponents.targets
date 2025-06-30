@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- build/RpaWinUiComponents.targets - NuGet Package Build Configuration -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <RpaWinUiComponentsVersion Condition="'$(RpaWinUiComponentsVersion)' == ''">1.0.0</RpaWinUiComponentsVersion>
+    <UseWinUI Condition="'$(UseWinUI)' == ''">true</UseWinUI>
+  </PropertyGroup>
+
+  <!-- Ensure WinUI 3 is properly configured -->
+  <ItemGroup Condition="'$(UseWinUI)' == 'true'">
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" Condition="'@(PackageReference->WithMetadataValue('Identity', 'Microsoft.WindowsAppSDK'))' == ''" />
+  </ItemGroup>
+
+  <!-- Include XAML resources -->
+  <ItemGroup>
+    <PRIResource Include="$(MSBuildThisFileDirectory)../lib/$(TargetFramework)/Themes/Generic.xaml" />
+  </ItemGroup>
+
+  <!-- Copy themes to output directory -->
+  <Target Name="CopyRpaWinUiComponentsThemes" BeforeTargets="Build">
+    <ItemGroup>
+      <ThemeFiles Include="$(MSBuildThisFileDirectory)../lib/$(TargetFramework)/Themes/**/*.*" />
+    </ItemGroup>
+    
+    <Copy SourceFiles="@(ThemeFiles)" 
+          DestinationFolder="$(OutputPath)/Themes" 
+          SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- Ensure proper references for WinUI 3 -->
+  <Target Name="EnsureWinUIReferences" BeforeTargets="ResolveAssemblyReferences">
+    <PropertyGroup>
+      <_WinUISDKReferencesPath>$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\10.0.19041.0\Windows.winmd</_WinUISDKReferencesPath>
+    </PropertyGroup>
+  </Target>
+
+</Project>

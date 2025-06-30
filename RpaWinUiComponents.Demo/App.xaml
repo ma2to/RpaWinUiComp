@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- RpaWinUiComponents.Demo/App.xaml -->
+<Application
+    x:Class="RpaWinUiComponents.Demo.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- WinUI 3 default resources -->
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+
+                <!-- AdvancedDataGrid component resources -->
+                <ResourceDictionary Source="ms-appx:///RpaWinUiComponents/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Demo application specific resources -->
+
+            <!-- Color Palette -->
+            <SolidColorBrush x:Key="DemoPrimaryBrush" Color="#2C3E50"/>
+            <SolidColorBrush x:Key="DemoSecondaryBrush" Color="#3498DB"/>
+            <SolidColorBrush x:Key="DemoSuccessBrush" Color="#27AE60"/>
+            <SolidColorBrush x:Key="DemoWarningBrush" Color="#F39C12"/>
+            <SolidColorBrush x:Key="DemoDangerBrush" Color="#E74C3C"/>
+            <SolidColorBrush x:Key="DemoInfoBrush" Color="#9B59B6"/>
+            <SolidColorBrush x:Key="DemoLightBrush" Color="#ECF0F1"/>
+            <SolidColorBrush x:Key="DemoMutedBrush" Color="#95A5A6"/>
+
+            <!-- Demo Button Styles -->
+            <Style x:Key="DemoActionButtonStyle" TargetType="Button">
+                <Setter Property="Padding" Value="12,6"/>
+                <Setter Property="CornerRadius" Value="4"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="MinWidth" Value="120"/>
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Margin" Value="0,0,8,0"/>
+            </Style>
+
+            <Style x:Key="DemoPrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource DemoActionButtonStyle}">
+                <Setter Property="Background" Value="{StaticResource DemoSecondaryBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+
+            <Style x:Key="DemoSuccessButtonStyle" TargetType="Button" BasedOn="{StaticResource DemoActionButtonStyle}">
+                <Setter Property="Background" Value="{StaticResource DemoSuccessBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+
+            <Style x:Key="DemoDangerButtonStyle" TargetType="Button" BasedOn="{StaticResource DemoActionButtonStyle}">
+                <Setter Property="Background" Value="{StaticResource DemoDangerBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+
+            <Style x:Key="DemoWarningButtonStyle" TargetType="Button" BasedOn="{StaticResource DemoActionButtonStyle}">
+                <Setter Property="Background" Value="{StaticResource DemoWarningBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+
+            <Style x:Key="DemoInfoButtonStyle" TargetType="Button" BasedOn="{StaticResource DemoActionButtonStyle}">
+                <Setter Property="Background" Value="{StaticResource DemoInfoBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+
+            <!-- Demo Text Styles -->
+            <Style x:Key="DemoTitleTextStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+
+            <Style x:Key="DemoSubtitleTextStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Foreground" Value="{StaticResource DemoMutedBrush}"/>
+            </Style>
+
+            <Style x:Key="DemoStatusTextStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Foreground" Value="#ECF0F1"/>
+            </Style>
+
+            <!-- Demo Panel Styles -->
+            <Style x:Key="DemoTitleBarStyle" TargetType="Border">
+                <Setter Property="Background" Value="{StaticResource DemoPrimaryBrush}"/>
+                <Setter Property="Padding" Value="16,8"/>
+            </Style>
+
+            <Style x:Key="DemoControlsPanelStyle" TargetType="Border">
+                <Setter Property="Background" Value="{StaticResource DemoLightBrush}"/>
+                <Setter Property="Padding" Value="16,12"/>
+                <Setter Property="BorderBrush" Value="{StaticResource DemoMutedBrush}"/>
+                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            </Style>
+
+            <Style x:Key="DemoStatusBarStyle" TargetType="Border">
+                <Setter Property="Background" Value="#34495E"/>
+                <Setter Property="Padding" Value="16,8"/>
+            </Style>
+
+            <!-- Demo ComboBox Style -->
+            <Style x:Key="DemoComboBoxStyle" TargetType="ComboBox">
+                <Setter Property="MinWidth" Value="120"/>
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="FontSize" Value="12"/>
+            </Style>
+
+            <!-- Demo CheckBox Style -->
+            <Style x:Key="DemoCheckBoxStyle" TargetType="CheckBox">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <!-- Animation Resources -->
+            <Storyboard x:Key="FadeInAnimation">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                 From="0" To="1" Duration="0:0:0.3">
+                    <DoubleAnimation.EasingFunction>
+                        <QuadraticEase EasingMode="EaseOut"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
+            <Storyboard x:Key="SlideInFromBottomAnimation">
+                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                 From="50" To="0" Duration="0:0:0.4">
+                    <DoubleAnimation.EasingFunction>
+                        <BackEase EasingMode="EaseOut" Amplitude="0.3"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                 From="0" To="1" Duration="0:0:0.3"/>
+            </Storyboard>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
