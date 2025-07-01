@@ -3,32 +3,24 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using System;
+using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
 
 namespace RpaWinUiComponents.Demo
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
     public sealed partial class App : Application
     {
         private Window? _mainWindow;
         private IHost? _host;
 
-        /// <summary>
-        /// Initializes the singleton application object.
-        /// </summary>
         public App()
         {
-            // BEZ InitializeComponent - vyrieši CS1061 chybu
+            // OPRAVA: InitializeComponent MUSÍ byť volané
+            this.InitializeComponent();
 
             // Initialize dependency injection and logging
             _host = CreateHostBuilder().Build();
         }
 
-        /// <summary>
-        /// Invoked when the application is launched.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             try
@@ -46,9 +38,6 @@ namespace RpaWinUiComponents.Demo
             }
         }
 
-        /// <summary>
-        /// Creates and configures the application host
-        /// </summary>
         private static IHostBuilder CreateHostBuilder()
         {
             return Host.CreateDefaultBuilder()
@@ -60,6 +49,9 @@ namespace RpaWinUiComponents.Demo
                         builder.AddConsole();
                         builder.SetMinimumLevel(LogLevel.Debug);
                     });
+
+                    // OPRAVA: Registrácia služieb pre AdvancedWinUiDataGrid
+                    services.AddAdvancedWinUiDataGrid();
                 });
         }
 

@@ -87,10 +87,10 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
         /// <param name="throttling">Throttling konfigurácia (voliteľné)</param>
         /// <param name="initialRowCount">Počiatočný počet riadkov</param>
         public async Task InitializeAsync(
-            List<DataGridColumnDefinition> columns,
-            List<ValidationRule>? validationRules = null,
-            ThrottlingConfig? throttling = null,
-            int initialRowCount = 100)
+    List<DataGridColumnDefinition> columns,  // OPRAVA: Použiť alias
+    List<ValidationRule>? validationRules = null,
+    ThrottlingConfig? throttling = null,
+    int initialRowCount = 100)
         {
             try
             {

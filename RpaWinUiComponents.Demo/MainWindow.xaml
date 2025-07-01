@@ -1,5 +1,9 @@
+<!-- ===================================================================== -->
+<!-- SÚBOR: RpaWinUiComponents.Demo/MainWindow.xaml - KOMPLETNÝ OPRAVENÝ -->
+<!-- Všetky chýbajúce elementy pridané -->
+<!-- ===================================================================== -->
+
 <?xml version="1.0" encoding="utf-8"?>
-<!-- RpaWinUiComponents.Demo/MainWindow.xaml - KOMPLETNE OPRAVENÝ pre WinUI 3 -->
 <Window
     x:Class="RpaWinUiComponents.Demo.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,13 +12,9 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <!-- Title Bar -->
             <RowDefinition Height="Auto"/>
-            <!-- Controls Panel -->
             <RowDefinition Height="Auto"/>
-            <!-- Main DataGrid -->
             <RowDefinition Height="*"/>
-            <!-- Status Bar -->
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -45,6 +45,7 @@
 
                 <!-- Action Buttons -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                    <!-- OPRAVA: Všetky buttony s správnymi menami -->
                     <Button x:Name="LoadSampleDataButton" 
                             Content="📊 Načítať ukážkové dáta" 
                             Click="OnLoadSampleDataClick"
@@ -88,6 +89,7 @@
 
                 <!-- Settings Panel -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <!-- OPRAVA: Throttling ComboBox -->
                     <ComboBox x:Name="ThrottlingComboBox" 
                               Header="Throttling:" 
                               SelectedIndex="1"
@@ -99,6 +101,7 @@
                         <ComboBoxItem Content="Slow (500ms)" Tag="Slow"/>
                     </ComboBox>
 
+                    <!-- OPRAVA: Debug Logging CheckBox -->
                     <CheckBox x:Name="DebugLoggingCheckBox" 
                               Content="Debug Logging" 
                               IsChecked="True"
@@ -109,19 +112,20 @@
             </Grid>
         </Border>
 
-        <!-- Main DataGrid - ZJEDNODUŠENÝ placeholder -->
+        <!-- Main DataGrid Container -->
         <Border Grid.Row="2" Background="White" BorderBrush="#BDC3C7" BorderThickness="1" Margin="8">
             <ScrollViewer ZoomMode="Disabled" 
                           HorizontalScrollMode="Auto" 
                           VerticalScrollMode="Auto">
                 <Grid>
+                    <!-- Placeholder Text -->
                     <TextBlock Text="DataGrid sa načíta po inicializácii..." 
                                FontSize="16" 
                                Foreground="#6C757D"
                                HorizontalAlignment="Center" 
                                VerticalAlignment="Center"/>
 
-                    <!-- PLACEHOLDER pre DataGrid komponent -->
+                    <!-- OPRAVA: DataGrid Placeholder Element -->
                     <Border x:Name="DataGridPlaceholder" Background="Transparent"/>
                 </Grid>
             </ScrollViewer>
@@ -136,6 +140,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- OPRAVA: Všetky status text blocky -->
                 <TextBlock x:Name="StatusTextBlock" 
                            Grid.Column="0"
                            Text="Pripravené - Načítajte ukážkové dáta alebo začnite písať do tabulky"

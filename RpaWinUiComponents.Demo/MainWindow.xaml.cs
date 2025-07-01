@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
+using ValidationRule = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ValidationRule;
+using ThrottlingConfig = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ThrottlingConfig;
 
 namespace RpaWinUiComponents.Demo
 {
@@ -15,21 +18,18 @@ namespace RpaWinUiComponents.Demo
         private readonly ILogger<MainWindow> _logger;
         private readonly IServiceProvider _serviceProvider;
         private bool _isInitialized = false;
-        private AdvancedWinUiDataGrid.AdvancedWinUiDataGridControl? _dataGridControl;
+        private RpaWinUiComponents.AdvancedWinUiDataGrid.AdvancedWinUiDataGridControl? _dataGridControl;
 
         public MainWindow()
         {
             this.InitializeComponent();
 
-            // Setup logging and DI
             _serviceProvider = CreateServiceProvider();
             _logger = _serviceProvider.GetRequiredService<ILogger<MainWindow>>();
 
-            // Inicializácia bez custom komponentu najprv
             _ = InitializeAsync();
 
             this.Closed += OnWindowClosed;
-
             _logger.LogInformation("Demo MainWindow created");
         }
 
@@ -56,13 +56,10 @@ namespace RpaWinUiComponents.Demo
         {
             try
             {
-                // Počkáme kým sa UI načíta
                 await Task.Delay(100);
 
-                // Vytvoríme DataGrid programaticky
-                _dataGridControl = new AdvancedWinUiDataGrid.AdvancedWinUiDataGridControl();
+                _dataGridControl = new RpaWinUiComponents.AdvancedWinUiDataGrid.AdvancedWinUiDataGridControl();
 
-                // Nahradíme placeholder
                 if (DataGridPlaceholder.Parent is Grid parentGrid)
                 {
                     var index = parentGrid.Children.IndexOf(DataGridPlaceholder);
@@ -72,11 +69,9 @@ namespace RpaWinUiComponents.Demo
 
                 var columns = CreateSampleColumns();
                 var validationRules = CreateSampleValidationRules();
-                var throttling = AdvancedWinUiDataGrid.Models.ThrottlingConfig.Default;
+                var throttling = ThrottlingConfig.Default;
 
                 await _dataGridControl.InitializeAsync(columns, validationRules, throttling, 50);
-
-                // Subscribe to events
                 _dataGridControl.ErrorOccurred += OnDataGridError;
 
                 _isInitialized = true;
@@ -93,9 +88,9 @@ namespace RpaWinUiComponents.Demo
             }
         }
 
-        private List<AdvancedWinUiDataGrid.Models.ColumnDefinition> CreateSampleColumns()
+        private List<DataGridColumnDefinition> CreateSampleColumns()
         {
-            return new List<AdvancedWinUiDataGrid.Models.ColumnDefinition>
+            return new List<DataGridColumnDefinition>
             {
                 new("Meno", typeof(string)) { MinWidth = 100, MaxWidth = 200, Header = "Meno" },
                 new("Priezvisko", typeof(string)) { MinWidth = 100, MaxWidth = 200, Header = "Priezvisko" },
@@ -105,9 +100,9 @@ namespace RpaWinUiComponents.Demo
             };
         }
 
-        private List<AdvancedWinUiDataGrid.Models.ValidationRule> CreateSampleValidationRules()
+        private List<ValidationRule> CreateSampleValidationRules()
         {
-            return new List<AdvancedWinUiDataGrid.Models.ValidationRule>
+            return new List<ValidationRule>
             {
                 new("Meno", (value, row) => !string.IsNullOrWhiteSpace(value?.ToString()), "Meno je povinné")
                 {
@@ -263,10 +258,6 @@ namespace RpaWinUiComponents.Demo
             }
         }
 
-        #endregion
-
-        #region Settings Event Handlers
-
         private void OnThrottlingChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -289,7 +280,7 @@ namespace RpaWinUiComponents.Demo
             try
             {
                 var isEnabled = DebugLoggingCheckBox.IsChecked == true;
-                AdvancedWinUiDataGrid.AdvancedWinUiDataGridControl.Configuration.SetDebugLogging(isEnabled);
+                RpaWinUiComponents.AdvancedWinUiDataGrid.AdvancedWinUiDataGridControl.Configuration.SetDebugLogging(isEnabled);
 
                 _logger.LogInformation("Debug logging {Status}", isEnabled ? "enabled" : "disabled");
                 UpdateStatusText($"Debug logging {(isEnabled ? "zapnutý" : "vypnutý")}");
@@ -300,11 +291,7 @@ namespace RpaWinUiComponents.Demo
             }
         }
 
-        #endregion
-
-        #region DataGrid Event Handlers
-
-        private async void OnDataGridError(object? sender, AdvancedWinUiDataGrid.Events.ComponentErrorEventArgs e)
+        private async void OnDataGridError(object? sender, RpaWinUiComponents.AdvancedWinUiDataGrid.Events.ComponentErrorEventArgs e)
         {
             try
             {

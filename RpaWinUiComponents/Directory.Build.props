@@ -1,5 +1,5 @@
 <Project>
-  
+
   <!-- Globálne nastavenia pre celé solution -->
   <PropertyGroup>
     <LangVersion>11.0</LangVersion>
@@ -9,6 +9,8 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <WarningsNotAsErrors />
+    <!-- OPRAVA: Povoliť unsafe code globálne pre WinUI 3 -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <!-- WinUI 3 specific settings -->
@@ -21,7 +23,7 @@
 
   <!-- Suppress specific warnings -->
   <PropertyGroup>
-    <NoWarn>$(NoWarn);NU1701;NU1602;NU1604</NoWarn>
+    <NoWarn>$(NoWarn);NU1701;NU1602;NU1604;CS0227</NoWarn>
   </PropertyGroup>
 
   <!-- Assembly info -->

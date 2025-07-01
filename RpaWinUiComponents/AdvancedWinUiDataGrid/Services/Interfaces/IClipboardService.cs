@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Models;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
+//using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
 
 namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Interfaces
 {
@@ -16,7 +17,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Interfaces
         string[,] ParseFromExcelFormat(string clipboardData);
 
         Task CopySelectedCellsAsync(IEnumerable<DataGridCell> selectedCells);
-        Task<bool> PasteToPositionAsync(int startRowIndex, int startColumnIndex, List<DataGridRow> rows, List<ColumnDefinition> columns);
+        Task<bool> PasteToPositionAsync(int startRowIndex, int startColumnIndex, List<DataGridRow> rows, List<DataGridColumnDefinition> columns);
 
         event System.EventHandler<ComponentErrorEventArgs> ErrorOccurred;
     }

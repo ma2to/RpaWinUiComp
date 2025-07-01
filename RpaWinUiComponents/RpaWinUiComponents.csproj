@@ -11,9 +11,9 @@
     <UseRidGraph>true</UseRidGraph>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <!-- Dependencies -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
@@ -22,7 +22,6 @@
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
 
-  <!-- XAML súbory -->
   <ItemGroup>
     <Page Include="AdvancedWinUiDataGrid\Views\AdvancedDataGridControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -34,17 +33,15 @@
     </Page>
   </ItemGroup>
 
-  <!-- Code-behind súbory -->
   <ItemGroup>
     <Compile Update="AdvancedWinUiDataGrid\Views\AdvancedDataGridControl.xaml.cs">
       <DependentUpon>AdvancedDataGridControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
-  <!-- XML Documentation -->
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <NoWarn>$(NoWarn);1591;CS0227</NoWarn>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 

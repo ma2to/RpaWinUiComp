@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Models;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
-using ColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
+//using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
 
 namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Interfaces
 {
     public interface INavigationService
     {
-        void Initialize(List<DataGridRow> rows, List<ColumnDefinition> columns);
+        void Initialize(List<DataGridRow> rows, List<DataGridColumnDefinition> columns);
 
         void MoveToNextCell();
         void MoveToPreviousCell();

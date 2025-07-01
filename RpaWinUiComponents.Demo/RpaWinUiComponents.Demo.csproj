@@ -12,9 +12,9 @@
     <UseRidGraph>true</UseRidGraph>
     <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <!-- NuGet packages -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
@@ -24,7 +24,6 @@
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
 
-  <!-- XAML súbory -->
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -34,7 +33,6 @@
     </Page>
   </ItemGroup>
 
-  <!-- Code-behind súbory -->
   <ItemGroup>
     <Compile Update="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -44,17 +42,13 @@
     </Compile>
   </ItemGroup>
 
-  <!-- Assets a manifest -->
   <ItemGroup>
     <Content Include="Assets\**\*" />
     <None Include="Package.appxmanifest" />
   </ItemGroup>
 
-  <!-- Reference na library projekt - AŽ NA KONCI -->
   <ItemGroup>
-    <Reference Include="RpaWinUiComponents">
-      <HintPath>..\RpaWinUiComponents\bin\Debug\net8.0-windows10.0.19041.0\RpaWinUiComponents.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\RpaWinUiComponents\RpaWinUiComponents.csproj" />
   </ItemGroup>
 
 </Project>

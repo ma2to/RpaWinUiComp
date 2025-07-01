@@ -83,10 +83,10 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Views
         /// Inicializuje komponent s konfiguráciou stĺpcov a validáciami
         /// </summary>
         public async Task InitializeAsync(
-            List<DataGridColumnDefinition> columns,
-            List<ValidationRule>? validationRules = null,
-            ThrottlingConfig? throttling = null,
-            int initialRowCount = 100)
+    List<DataGridColumnDefinition> columns,  // OPRAVA: Použiť alias
+    List<ValidationRule>? validationRules = null,
+    ThrottlingConfig? throttling = null,
+    int initialRowCount = 100)
         {
             ThrowIfDisposed();
 
