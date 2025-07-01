@@ -1,4 +1,4 @@
-﻿//Views/AdvancedDataGridControl.xaml.cs - Zjednodušená verzia
+﻿//Views/AdvancedDataGridControl.xaml.cs - Kompletne opravený
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,6 +12,7 @@ using Windows.System;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.ViewModels;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
+using RpaWinUiComponents.AdvancedWinUiDataGrid.Commands;
 
 // Alias pre riešenie konfliktu ColumnDefinition
 using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
@@ -220,9 +221,18 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Views
 
             try
             {
-                if (_viewModel?.ClearAllDataCommand?.CanExecute(null) == true)
+                if (_viewModel?.ClearAllDataCommand != null && _viewModel.ClearAllDataCommand.CanExecute(null))
                 {
-                    _viewModel.ClearAllDataCommand.Execute(null);
+                    if (_viewModel.ClearAllDataCommand is AsyncRelayCommand asyncCommand)
+                    {
+                        await asyncCommand.ExecuteAsync();
+                    }
+                    else
+                    {
+                        _viewModel.ClearAllDataCommand.Execute(null);
+                        // For non-async commands, we simulate completion
+                        await Task.CompletedTask;
+                    }
                     _logger.LogInformation("All data cleared");
                 }
             }
@@ -242,9 +252,18 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Views
 
             try
             {
-                if (_viewModel?.RemoveEmptyRowsCommand?.CanExecute(null) == true)
+                if (_viewModel?.RemoveEmptyRowsCommand != null && _viewModel.RemoveEmptyRowsCommand.CanExecute(null))
                 {
-                    _viewModel.RemoveEmptyRowsCommand.Execute(null);
+                    if (_viewModel.RemoveEmptyRowsCommand is AsyncRelayCommand asyncCommand)
+                    {
+                        await asyncCommand.ExecuteAsync();
+                    }
+                    else
+                    {
+                        _viewModel.RemoveEmptyRowsCommand.Execute(null);
+                        // For non-async commands, we simulate completion
+                        await Task.CompletedTask;
+                    }
                     _logger.LogInformation("Empty rows removed");
                 }
             }
@@ -543,36 +562,66 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Views
         {
             try
             {
-                if (KeyboardShortcutsPanel != null)
+                // Ensure we're loaded before accessing named elements
+                if (!this.IsLoaded)
                 {
-                    KeyboardShortcutsPanel.Visibility = _isKeyboardShortcutsVisible ? Visibility.Visible : Visibility.Collapsed;
+                    // Subscribe only once to avoid multiple subscriptions
+                    this.Loaded -= OnDelayedUpdate;
+                    this.Loaded += OnDelayedUpdate;
+                    return;
                 }
 
-                if (ToggleIcon != null)
+                // Use dispatcher to ensure UI thread access
+                this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    ToggleIcon.Text = _isKeyboardShortcutsVisible ? "▲" : "▼";
-                }
+                    try
+                    {
+                        // Check if elements exist before accessing them
+                        var keyboardPanel = this.FindName("KeyboardShortcutsPanel") as Border;
+                        if (keyboardPanel != null)
+                        {
+                            keyboardPanel.Visibility = _isKeyboardShortcutsVisible ? Visibility.Visible : Visibility.Collapsed;
+                        }
 
-                if (ToggleKeyboardShortcutsButton != null)
-                {
-                    var backgroundColor = _isKeyboardShortcutsVisible
-                        ? new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DodgerBlue)
-                        : new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightGray);
+                        var toggleIcon = this.FindName("ToggleIcon") as TextBlock;
+                        if (toggleIcon != null)
+                        {
+                            toggleIcon.Text = _isKeyboardShortcutsVisible ? "▲" : "▼";
+                        }
 
-                    var foregroundColor = _isKeyboardShortcutsVisible
-                        ? new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White)
-                        : new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Black);
+                        var toggleButton = this.FindName("ToggleKeyboardShortcutsButton") as Button;
+                        if (toggleButton != null)
+                        {
+                            var backgroundColor = _isKeyboardShortcutsVisible
+                                ? new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DodgerBlue)
+                                : new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightGray);
 
-                    ToggleKeyboardShortcutsButton.Background = backgroundColor;
-                    ToggleKeyboardShortcutsButton.Foreground = foregroundColor;
-                }
+                            var foregroundColor = _isKeyboardShortcutsVisible
+                                ? new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White)
+                                : new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Black);
 
-                _logger.LogDebug("Keyboard shortcuts visibility updated: {IsVisible}", _isKeyboardShortcutsVisible);
+                            toggleButton.Background = backgroundColor;
+                            toggleButton.Foreground = foregroundColor;
+                        }
+
+                        _logger.LogDebug("Keyboard shortcuts visibility updated: {IsVisible}", _isKeyboardShortcutsVisible);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error in UI thread during keyboard shortcuts update");
+                    }
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating keyboard shortcuts visibility");
             }
+        }
+
+        private void OnDelayedUpdate(object sender, RoutedEventArgs e)
+        {
+            this.Loaded -= OnDelayedUpdate;
+            UpdateKeyboardShortcutsVisibility();
         }
 
         private void UnsubscribeAllEvents()
@@ -581,6 +630,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Views
             {
                 this.KeyDown -= OnMainControlKeyDown;
                 this.Loaded -= OnLoaded;
+                this.Loaded -= OnDelayedUpdate;
                 this.Unloaded -= OnUnloaded;
 
                 _logger.LogDebug("All events unsubscribed");
@@ -661,7 +711,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Views
 
         #region Error Handling
 
-        protected virtual void OnErrorOccurred(ComponentErrorEventArgs e)
+        protected void OnErrorOccurred(ComponentErrorEventArgs e)
         {
             ErrorOccurred?.Invoke(this, e);
         }

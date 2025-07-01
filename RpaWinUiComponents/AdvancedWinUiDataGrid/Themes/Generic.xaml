@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Themes/Generic.xaml - WinUI 3 Default Styles -->
+<!-- Themes/Generic.xaml - WinUI 3 Default Styles - Opravený -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -50,7 +50,7 @@
                         <VisualStateManager.VisualStateGroups>
                             <!-- Edit States -->
                             <VisualStateGroup x:Name="EditStates">
-                                <VisualState x:Name="Normal">
+                                <VisualState x:Name="DefaultState">
                                     <VisualState.Setters>
                                         <Setter Target="PART_TextBlock.Visibility" Value="Visible"/>
                                         <Setter Target="PART_TextBox.Visibility" Value="Collapsed"/>
@@ -108,7 +108,7 @@
 
                             <!-- Pointer States -->
                             <VisualStateGroup x:Name="PointerStates">
-                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="PointerNormal"/>
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="PART_RootBorder.Background" Value="{ThemeResource SystemControlBackgroundListLowBrush}"/>

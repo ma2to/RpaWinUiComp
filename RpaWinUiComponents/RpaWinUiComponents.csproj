@@ -1,16 +1,13 @@
-﻿<!-- RpaWinUiComponents/RpaWinUiComponents.csproj - Opravený -->
-<Project Sdk="Microsoft.NET.Sdk">
-  <!-- Základné nastavenia projektu -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>RpaWinUiComponents</RootNamespace>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <UseWinUI>true</UseWinUI>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
-    <!-- RIEŠENIE: Vypnutie automatického pridávania Page items -->
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
 
     <!-- NuGet Package Metadata -->
@@ -30,11 +27,6 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-  <!-- Remove icon from package if it doesn't exist -->
-  <PropertyGroup Condition="!Exists('icon.png')">
-    <PackageIcon></PackageIcon>
-  </PropertyGroup>
-
   <!-- Dependencies -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
@@ -45,16 +37,22 @@
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
 
-  <!-- Explicitne definované XAML súbory -->
+  <!-- Komponenty - nechávame .xaml pre Controls, aby sa buildli do DLL -->
   <ItemGroup>
     <Page Include="AdvancedWinUiDataGrid\Views\AdvancedDataGridControl.xaml" />
-    <Page Include="AdvancedWinUiDataGrid\Themes\Generic.xaml" />
   </ItemGroup>
 
-  <!-- Code behind súbory -->
-  <ItemGroup>
-    <Compile Update="AdvancedWinUiDataGrid\Views\AdvancedDataGridControl.xaml.cs" DependentUpon="AdvancedDataGridControl.xaml" />
-  </ItemGroup>
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <Content Include="AdvancedWinUiDataGrid\Themes\Generic.xaml" Pack="true" PackagePath="Themes\" />
+</ItemGroup>
+
+<ItemGroup Condition="'$(IsPackable)' != 'true'">
+    <None Include="AdvancedWinUiDataGrid\Themes\Generic.xaml" />
+</ItemGroup>
+
+
+  <!-- Štýly a ResourceDictionary ako Content súbory -->
+ 
 
   <!-- Package Content Files -->
   <ItemGroup>
@@ -77,5 +75,7 @@
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
   </PropertyGroup>
+
 </Project>

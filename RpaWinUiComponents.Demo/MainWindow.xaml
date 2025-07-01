@@ -5,9 +5,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:RpaWinUiComponents.AdvancedWinUiDataGrid"
-    Title="RpaWinUiComponents Demo - Advanced DataGrid"
-    Width="1400"
-    Height="900">
+    Title="RpaWinUiComponents Demo - Advanced DataGrid">
 
     <Grid>
         <Grid.RowDefinitions>

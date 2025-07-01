@@ -1,14 +1,15 @@
 ﻿//Helpers/DebugHelper.cs - Opravený
 using System;
 using Microsoft.Extensions.Logging;
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
+// Alias pre riešenie konfliktu s LoggerFactory
+using AppLoggerFactory = RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration.LoggerFactory;
 
 namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Helpers
 {
     internal static class DebugHelper
     {
         private static bool _isDebugEnabled = true;
-        private static readonly ILogger _logger = LoggerFactory.CreateLogger("DebugHelper");
+        private static readonly ILogger _logger = AppLoggerFactory.CreateLogger("DebugHelper");
 
         public static bool IsDebugEnabled
         {

@@ -1,4 +1,4 @@
-﻿//Models/DataGridRow.cs
+﻿//Models/DataGridRow.cs - Opravený
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -90,12 +90,15 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Models
         }
 
         /// <summary>
-        /// Získa hodnotu bunky podľa názvu stĺpca
+        /// Získa typovú hodnotu z bunky podľa názvu stĺpca
         /// </summary>
-        public T? GetValue<T>(string columnName)
+        public T GetValue<T>(string columnName)
         {
             var cell = GetCell(columnName);
-            return cell?.GetValue<T>() ?? default(T);
+            if (cell == null)
+                return default(T)!;
+
+            return cell.GetValue<T>();
         }
 
         /// <summary>

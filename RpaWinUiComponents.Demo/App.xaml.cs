@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
-using MyWinUI3App;
 using RpaWinUiComponents.AdvancedWinUiDataGrid;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
 using System;

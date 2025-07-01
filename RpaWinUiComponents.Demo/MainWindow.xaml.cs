@@ -44,7 +44,8 @@ namespace RpaWinUiComponents.Demo
             // Configure AdvancedDataGrid services
             AdvancedWinUiDataGridControl.Configuration.ConfigureServices(_serviceProvider);
 
-            this.Loaded += OnWindowLoaded;
+            //this.Loaded += OnWindowLoaded;
+            _ = InitializeDataGridAsync();
             this.Closed += OnWindowClosed;
 
             _logger.LogInformation("Demo MainWindow created");

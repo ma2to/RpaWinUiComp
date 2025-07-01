@@ -1,4 +1,4 @@
-﻿//Models/DataGridCell.cs
+﻿//Models/DataGridCell.cs - Opravený
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -154,21 +154,21 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Models
         /// <summary>
         /// Získa typovú hodnotu bunky
         /// </summary>
-        public T? GetValue<T>()
+        public T GetValue<T>()
         {
             try
             {
                 if (Value == null)
-                    return default(T);
+                    return default(T)!;
 
                 if (Value is T directValue)
                     return directValue;
 
-                return (T?)Convert.ChangeType(Value, typeof(T));
+                return (T)Convert.ChangeType(Value, typeof(T))!;
             }
             catch
             {
-                return default(T);
+                return default(T)!;
             }
         }
 

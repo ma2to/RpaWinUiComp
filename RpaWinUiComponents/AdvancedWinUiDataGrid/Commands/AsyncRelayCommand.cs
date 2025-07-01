@@ -1,4 +1,4 @@
-﻿//Commands/AsyncRelayCommand.cs
+﻿//Commands/AsyncRelayCommand.cs - Rozšírený
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -28,6 +28,14 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Commands
         }
 
         public async void Execute(object? parameter)
+        {
+            await ExecuteAsync();
+        }
+
+        /// <summary>
+        /// Explicit async execution method
+        /// </summary>
+        public async Task ExecuteAsync()
         {
             if (_isExecuting) return;
 
@@ -85,15 +93,22 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Commands
 
         public async void Execute(object? parameter)
         {
+            T? typedParameter = parameter is T tp ? tp : default(T);
+            await ExecuteAsync(typedParameter);
+        }
+
+        /// <summary>
+        /// Explicit async execution method
+        /// </summary>
+        public async Task ExecuteAsync(T? parameter = default(T))
+        {
             if (_isExecuting) return;
 
             try
             {
                 _isExecuting = true;
                 RaiseCanExecuteChanged();
-
-                T? typedParameter = parameter is T tp ? tp : default(T);
-                await _executeAsync(typedParameter);
+                await _executeAsync(parameter);
             }
             catch (Exception ex)
             {

@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>RpaWinUiComponents.Demo</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -20,16 +21,12 @@
     <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
   </PropertyGroup>
 
+  <!-- Obsah balíka -->
   <ItemGroup>
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Assets\**\*" />
   </ItemGroup>
 
+  <!-- Referencie -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
@@ -37,30 +34,35 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.6" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4188" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
+    <!--<PackageReference Include="RpaWinUiComponents" Version="1.0.0" />-->
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
 
-  <!-- Reference to the main RpaWinUiComponents library -->
   <ItemGroup>
     <ProjectReference Include="..\RpaWinUiComponents\RpaWinUiComponents.csproj" />
   </ItemGroup>
 
-  <!-- XAML Files -->
+  <!-- EXPLICITNE definované XAML súbory -->
   <ItemGroup>
-    <Page Include="**/*.xaml" Exclude="bin/**;obj/**" />
+    <Page Include="MainWindow.xaml" />
   </ItemGroup>
-
+  
   <!-- Code Behind Files -->
   <ItemGroup>
-    <Compile Update="**/*.xaml.cs" DependentUpon="%(Filename)" />
+    <Compile Update="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
-  <!-- Manifest and packaging -->
+  <!-- Manifest -->
   <ItemGroup>
     <None Include="Package.appxmanifest" />
   </ItemGroup>
 
-  <!-- Build configuration -->
+  <!-- Build konfigurácie -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <EnableMsixTooling>true</EnableMsixTooling>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
