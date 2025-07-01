@@ -1,0 +1,52 @@
+<Project>
+  <PropertyGroup>
+    <!-- .NET 8 konfigurácia -->
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <WarningsNotAsErrors />
+    
+    <!-- WinUI 3 globálne nastavenia -->
+    <UseWinUI>true</UseWinUI>
+    <WindowsSdkPackageVersion>10.0.26100.4188</WindowsSdkPackageVersion>
+    
+    <!-- .NET 8 kritické optimalizácie -->
+    <UseRidGraph>true</UseRidGraph>
+    <SelfContained>false</SelfContained>
+    <RuntimeFrameworkVersion>8.0.0</RuntimeFrameworkVersion>
+    
+    <!-- XAML optimalizácie -->
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <DisableXamlMetadataProvider>false</DisableXamlMetadataProvider>
+    
+    <!-- Performance optimalizácie -->
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    
+    <!-- Build optimalizácie -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+  </PropertyGroup>
+  
+  <!-- Globálne NuGet package verzie -->
+  <PropertyGroup>
+    <MicrosoftWindowsAppSDKVersion>1.7.250606001</MicrosoftWindowsAppSDKVersion>
+    <MicrosoftExtensionsVersion>9.0.6</MicrosoftExtensionsVersion>
+    <SystemTextJsonVersion>9.0.6</SystemTextJsonVersion>
+  </PropertyGroup>
+  
+  <!-- Debug konfigurácia -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  
+  <!-- Release konfigurácia -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+</Project>

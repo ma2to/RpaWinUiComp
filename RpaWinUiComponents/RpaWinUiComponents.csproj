@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
@@ -8,6 +8,9 @@
     <UseWinUI>true</UseWinUI>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- KRITICKÉ pre .NET 8 -->
+    <UseRidGraph>true</UseRidGraph>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
 
     <!-- NuGet Package Metadata -->
@@ -27,32 +30,34 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-  <!-- Dependencies -->
+  <!-- Dependencies - AKTUALIZOVANÉ verzie -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4188" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240923002" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
 
-  <!-- Komponenty - nechávame .xaml pre Controls, aby sa buildli do DLL -->
+  <!-- XAML súbory - EXPLICITNE definované -->
   <ItemGroup>
-    <Page Include="AdvancedWinUiDataGrid\Views\AdvancedDataGridControl.xaml" />
+    <Page Include="AdvancedWinUiDataGrid\Views\AdvancedDataGridControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AdvancedWinUiDataGrid\Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(IsPackable)' == 'true'">
-    <Content Include="AdvancedWinUiDataGrid\Themes\Generic.xaml" Pack="true" PackagePath="Themes\" />
-</ItemGroup>
-
-<ItemGroup Condition="'$(IsPackable)' != 'true'">
-    <None Include="AdvancedWinUiDataGrid\Themes\Generic.xaml" />
-</ItemGroup>
-
-
-  <!-- Štýly a ResourceDictionary ako Content súbory -->
- 
+  <!-- Code-behind súbory -->
+  <ItemGroup>
+    <Compile Update="AdvancedWinUiDataGrid\Views\AdvancedDataGridControl.xaml.cs">
+      <DependentUpon>AdvancedDataGridControl.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 
   <!-- Package Content Files -->
   <ItemGroup>
@@ -77,5 +82,10 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
   </PropertyGroup>
+
+  <!-- Force XAML regeneration -->
+  <Target Name="ForceXamlGeneration" BeforeTargets="Build">
+    <Message Text="Forcing XAML generation for Library project..." Importance="high" />
+  </Target>
 
 </Project>

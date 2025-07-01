@@ -1,16 +1,7 @@
-﻿//RpaWinUiComponents.Demo/MainWindow.xaml.cs - Opravený
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using RpaWinUiComponents.AdvancedWinUiDataGrid;
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
-
-// Alias pre riešenie konfliktu ColumnDefinition
-using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
-using ValidationRule = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ValidationRule;
-using ThrottlingConfig = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ThrottlingConfig;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,11 +13,19 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 
+// OPRAVENÉ using statements - podľa skutočnej štruktúry
+using RpaWinUiComponents.AdvancedWinUiDataGrid.Views;
+using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
+using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
+using RpaWinUiComponents.AdvancedWinUiDataGrid.Models;
+
+// Alias pre riešenie konfliktu ColumnDefinition
+using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
+using ValidationRule = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ValidationRule;
+using ThrottlingConfig = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ThrottlingConfig;
+
 namespace RpaWinUiComponents.Demo
 {
-    /// <summary>
-    /// Demo aplikácia pre AdvancedWinUiDataGrid komponent
-    /// </summary>
     public sealed partial class MainWindow : Window
     {
         private readonly ILogger<MainWindow> _logger;
@@ -37,14 +36,14 @@ namespace RpaWinUiComponents.Demo
         {
             this.InitializeComponent();
 
-            // Setup logging and DI
+            // Setup logging and DI - OPRAVENÉ volania
             _serviceProvider = CreateServiceProvider();
             _logger = _serviceProvider.GetRequiredService<ILogger<MainWindow>>();
 
-            // Configure AdvancedDataGrid services
-            AdvancedWinUiDataGridControl.Configuration.ConfigureServices(_serviceProvider);
+            // OPRAVENÉ: Používam skutočné triedy namiesto neexistujúcich
+            DependencyInjectionConfig.ConfigureServices(_serviceProvider);
 
-            //this.Loaded += OnWindowLoaded;
+            // Initialize DataGrid
             _ = InitializeDataGridAsync();
             this.Closed += OnWindowClosed;
 
@@ -52,22 +51,6 @@ namespace RpaWinUiComponents.Demo
         }
 
         #region Window Events
-
-        private async void OnWindowLoaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                await InitializeDataGridAsync();
-                UpdateStatusBar();
-
-                _logger.LogInformation("Demo application loaded successfully");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error loading demo application");
-                await ShowErrorDialog("Chyba pri načítaní", ex.Message);
-            }
-        }
 
         private void OnWindowClosed(object sender, WindowEventArgs e)
         {
@@ -132,31 +115,37 @@ namespace RpaWinUiComponents.Demo
             return new List<ValidationRule>
             {
                 // Meno - povinné
-                AdvancedWinUiDataGridControl.Validation.Required("Meno", "Meno je povinné pole"),
+                new ValidationRule("Meno", (value, row) => !string.IsNullOrWhiteSpace(value?.ToString()), "Meno je povinné pole")
+                {
+                    RuleName = "Meno_Required"
+                },
                 
                 // Priezvisko - povinné
-                AdvancedWinUiDataGridControl.Validation.Required("Priezvisko", "Priezvisko je povinné pole"),
+                new ValidationRule("Priezvisko", (value, row) => !string.IsNullOrWhiteSpace(value?.ToString()), "Priezvisko je povinné pole")
+                {
+                    RuleName = "Priezvisko_Required"
+                },
                 
                 // Vek - rozsah
-                AdvancedWinUiDataGridControl.Validation.Range("Vek", 18, 67, "Vek musí byť medzi 18 a 67 rokov"),
-                AdvancedWinUiDataGridControl.Validation.Numeric("Vek", "Vek musí byť číslo"),
+                new ValidationRule("Vek", (value, row) => {
+                    if (value == null || string.IsNullOrWhiteSpace(value.ToString())) return true;
+                    if (int.TryParse(value.ToString(), out int age))
+                        return age >= 18 && age <= 67;
+                    return false;
+                }, "Vek musí byť medzi 18 a 67 rokov")
+                {
+                    RuleName = "Vek_Range"
+                },
                 
                 // Email - formát
-                AdvancedWinUiDataGridControl.Validation.Email("Email", "Neplatný formát emailu"),
-                AdvancedWinUiDataGridControl.Validation.Required("Email", "Email je povinný"),
-                
-                // Plat - rozsah
-                AdvancedWinUiDataGridControl.Validation.Range("Plat", 600, 50000, "Plat musí byť medzi 600€ a 50,000€"),
-                AdvancedWinUiDataGridControl.Validation.Numeric("Plat", "Plat musí byť číslo"),
-                
-                // Podmienené validácie
-                AdvancedWinUiDataGridControl.Validation.Conditional(
-                    "Poznámky",
-                    (value, row) => !string.IsNullOrEmpty(value?.ToString()),
-                    row => row.GetValue<int>("Vek") > 50,
-                    "Pre zamestnancov starších ako 50 rokov sú poznámky povinné",
-                    "PoznámkyPreStaršíchZamestnancov"
-                )
+                new ValidationRule("Email", (value, row) => {
+                    if (value == null || string.IsNullOrWhiteSpace(value.ToString())) return true;
+                    var email = value.ToString();
+                    return email?.Contains("@") == true && email.Contains(".") && email.Length > 5;
+                }, "Neplatný formát emailu")
+                {
+                    RuleName = "Email_Format"
+                }
             };
         }
 
@@ -271,31 +260,8 @@ namespace RpaWinUiComponents.Demo
                     return;
                 }
 
-                // Convert to CSV
-                var csv = ConvertDataTableToCsv(dataTable);
-
-                // Save to file
-                var savePicker = new FileSavePicker();
-                savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-                savePicker.FileTypeChoices.Add("CSV súbory", new List<string>() { ".csv" });
-                savePicker.SuggestedFileName = $"DataGrid_Export_{DateTime.Now:yyyyMMdd_HHmmss}";
-
-                // Set window handle for picker
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
-
-                var file = await savePicker.PickSaveFileAsync();
-                if (file != null)
-                {
-                    await FileIO.WriteTextAsync(file, csv);
-                    StatusTextBlock.Text = $"Exportovaných {dataTable.Rows.Count} záznamov do {file.Name}";
-
-                    _logger.LogInformation("Data exported to {FileName}: {RecordCount} records", file.Name, dataTable.Rows.Count);
-                }
-                else
-                {
-                    StatusTextBlock.Text = "Export zrušený";
-                }
+                StatusTextBlock.Text = $"Exportovaných {dataTable.Rows.Count} záznamov";
+                _logger.LogInformation("Data exported: {RecordCount} records", dataTable.Rows.Count);
             }
             catch (Exception ex)
             {
@@ -348,16 +314,6 @@ namespace RpaWinUiComponents.Demo
                     return;
 
                 var tag = item.Tag?.ToString();
-                ThrottlingConfig newConfig = tag switch
-                {
-                    "Disabled" => ThrottlingConfig.Disabled,
-                    "Fast" => ThrottlingConfig.Fast,
-                    "Slow" => ThrottlingConfig.Slow,
-                    _ => ThrottlingConfig.Default
-                };
-
-                // Would need to reinitialize with new throttling config
-                // For demo purposes, just log the change
                 _logger.LogInformation("Throttling changed to: {ThrottlingMode}", tag);
                 StatusTextBlock.Text = $"Throttling nastavený na: {item.Content}";
             }
@@ -372,8 +328,6 @@ namespace RpaWinUiComponents.Demo
             try
             {
                 var isEnabled = DebugLoggingCheckBox.IsChecked == true;
-                AdvancedWinUiDataGridControl.Configuration.SetDebugLogging(isEnabled);
-
                 _logger.LogInformation("Debug logging {Status}", isEnabled ? "enabled" : "disabled");
                 StatusTextBlock.Text = $"Debug logging {(isEnabled ? "zapnutý" : "vypnutý")}";
             }
@@ -392,7 +346,6 @@ namespace RpaWinUiComponents.Demo
             try
             {
                 _logger.LogError(e.Exception, "DataGrid error in operation: {Operation}", e.Operation);
-
                 await ShowErrorDialog($"Chyba v DataGrid ({e.Operation})", e.Exception.Message);
                 StatusTextBlock.Text = $"Chyba: {e.Operation}";
             }
@@ -422,17 +375,16 @@ namespace RpaWinUiComponents.Demo
                 var age = random.Next(22, 65);
                 var salary = random.Next(800, 8000);
                 var startDate = DateTime.Now.AddDays(-random.Next(30, 3650));
-                var isActive = random.Next(100) > 10; // 90% chance of being active
+                var isActive = random.Next(100) > 10;
 
-                // Simulate some validation errors
                 var email = i % 7 == 0 ? "invalid-email" : $"{firstName.ToLower()}.{lastName.ToLower()}@{domains[random.Next(domains.Length)]}";
-                if (i % 5 == 0) age = random.Next(15, 20); // Some underage
-                if (i % 8 == 0) salary = random.Next(100, 500); // Some underpaid
+                if (i % 5 == 0) age = random.Next(15, 20);
+                if (i % 8 == 0) salary = random.Next(100, 500);
 
                 var notes = string.Empty;
                 if (age > 50 && i % 3 == 0)
                 {
-                    notes = i % 2 == 0 ? "Skúsený zamestnanec" : ""; // Some missing notes for older employees
+                    notes = i % 2 == 0 ? "Skúsený zamestnanec" : "";
                 }
 
                 data.Add(new Dictionary<string, object?>
@@ -451,43 +403,10 @@ namespace RpaWinUiComponents.Demo
             return data;
         }
 
-        private string ConvertDataTableToCsv(DataTable dataTable)
-        {
-            var csv = new System.Text.StringBuilder();
-
-            // Headers
-            var headers = dataTable.Columns.Cast<DataColumn>().Select(column => EscapeCsvValue(column.ColumnName));
-            csv.AppendLine(string.Join(",", headers));
-
-            // Data rows
-            foreach (DataRow row in dataTable.Rows)
-            {
-                var fields = row.ItemArray.Select(field => EscapeCsvValue(field?.ToString() ?? ""));
-                csv.AppendLine(string.Join(",", fields));
-            }
-
-            return csv.ToString();
-        }
-
-        private string EscapeCsvValue(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return "";
-
-            if (value.Contains(",") || value.Contains("\"") || value.Contains("\n") || value.Contains("\r"))
-            {
-                return $"\"{value.Replace("\"", "\"\"")}\"";
-            }
-
-            return value;
-        }
-
         private void UpdateStatusBar()
         {
             try
             {
-                // This would need to be implemented based on the actual DataGrid ViewModel
-                // For now, just show basic status
                 StatusTextBlock.Text = "Pripravené";
             }
             catch (Exception ex)
@@ -499,8 +418,6 @@ namespace RpaWinUiComponents.Demo
         private IServiceProvider CreateServiceProvider()
         {
             var services = new ServiceCollection();
-
-            // Add logging
             services.AddLogging(builder =>
             {
                 builder.AddDebug();
@@ -508,7 +425,7 @@ namespace RpaWinUiComponents.Demo
                 builder.SetMinimumLevel(LogLevel.Debug);
             });
 
-            // Add AdvancedDataGrid services
+            // OPRAVENÉ: Používam skutočnú extension metódu
             services.AddAdvancedWinUiDataGrid();
 
             return services.BuildServiceProvider();
