@@ -1,4 +1,4 @@
-﻿//Services/Implementation/ExportService.cs
+﻿//Services/Implementation/ExportService.cs - OPRAVENÝ
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Models;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Interfaces;
+// ALIAS pre riešenie konfliktu
+using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
 
 namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
 {
@@ -23,7 +25,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             _logger = logger;
         }
 
-        public async Task<DataTable> ExportToDataTableAsync(List<DataGridRow> rows, List<ColumnDefinition> columns, bool includeValidAlerts = false)
+        public async Task<DataTable> ExportToDataTableAsync(List<DataGridRow> rows, List<DataGridColumnDefinition> columns, bool includeValidAlerts = false)
         {
             try
             {
@@ -82,7 +84,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             }
         }
 
-        public async Task<string> ExportToCsvAsync(List<DataGridRow> rows, List<ColumnDefinition> columns, bool includeValidAlerts = false)
+        public async Task<string> ExportToCsvAsync(List<DataGridRow> rows, List<DataGridColumnDefinition> columns, bool includeValidAlerts = false)
         {
             try
             {
@@ -130,7 +132,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             }
         }
 
-        public async Task<byte[]> ExportToExcelAsync(List<DataGridRow> rows, List<ColumnDefinition> columns, bool includeValidAlerts = false)
+        public async Task<byte[]> ExportToExcelAsync(List<DataGridRow> rows, List<DataGridColumnDefinition> columns, bool includeValidAlerts = false)
         {
             try
             {
@@ -153,7 +155,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             }
         }
 
-        public async Task<List<Dictionary<string, object?>>> ExportToDictionariesAsync(List<DataGridRow> rows, List<ColumnDefinition> columns)
+        public async Task<List<Dictionary<string, object?>>> ExportToDictionariesAsync(List<DataGridRow> rows, List<DataGridColumnDefinition> columns)
         {
             try
             {
@@ -195,9 +197,9 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             }
         }
 
-        private List<ColumnDefinition> GetExportColumns(List<ColumnDefinition> originalColumns, bool includeValidAlerts)
+        private List<DataGridColumnDefinition> GetExportColumns(List<DataGridColumnDefinition> originalColumns, bool includeValidAlerts)
         {
-            var exportColumns = new List<ColumnDefinition>();
+            var exportColumns = new List<DataGridColumnDefinition>();
 
             // Add normal columns (exclude DeleteAction and ValidAlerts initially)
             var normalColumns = originalColumns

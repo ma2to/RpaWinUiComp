@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- RpaWinUiComponents.Demo/App.xaml - OPRAVENÝ -->
+<!-- RpaWinUiComponents.Demo/App.xaml - OPRAVENÝ pre WinUI 3 -->
 <Application
     x:Class="RpaWinUiComponents.Demo.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -10,12 +10,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- WinUI 3 default resources -->
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-
-                <!-- ODSTRÁNENÝ problematický import - nechajte iba ak existuje -->
-                <!-- <ResourceDictionary Source="ms-appx:///RpaWinUiComponents/Themes/Generic.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Demo application specific resources zostávajú bez zmeny -->
+            <!-- Demo application specific resources -->
 
             <!-- Color Palette -->
             <SolidColorBrush x:Key="DemoPrimaryBrush" Color="#2C3E50"/>

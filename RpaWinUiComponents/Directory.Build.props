@@ -1,52 +1,36 @@
 <Project>
+  
+  <!-- GlobÃ¡lne nastavenia pre celÃ© solution -->
   <PropertyGroup>
-    <!-- .NET 8 konfigurácia -->
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <WarningsNotAsErrors />
-    
-    <!-- WinUI 3 globálne nastavenia -->
-    <UseWinUI>true</UseWinUI>
-    <WindowsSdkPackageVersion>10.0.26100.4188</WindowsSdkPackageVersion>
-    
-    <!-- .NET 8 kritické optimalizácie -->
+  </PropertyGroup>
+
+  <!-- WinUI 3 specific settings -->
+  <PropertyGroup Condition="'$(UseWinUI)' == 'true'">
     <UseRidGraph>true</UseRidGraph>
-    <SelfContained>false</SelfContained>
-    <RuntimeFrameworkVersion>8.0.0</RuntimeFrameworkVersion>
-    
-    <!-- XAML optimalizácie -->
-    <EnableDefaultPageItems>false</EnableDefaultPageItems>
-    <DisableXamlMetadataProvider>false</DisableXamlMetadataProvider>
-    
-    <!-- Performance optimalizácie -->
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-    
-    <!-- Build optimalizácie -->
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
   </PropertyGroup>
-  
-  <!-- Globálne NuGet package verzie -->
+
+  <!-- Suppress specific warnings -->
   <PropertyGroup>
-    <MicrosoftWindowsAppSDKVersion>1.7.250606001</MicrosoftWindowsAppSDKVersion>
-    <MicrosoftExtensionsVersion>9.0.6</MicrosoftExtensionsVersion>
-    <SystemTextJsonVersion>9.0.6</SystemTextJsonVersion>
+    <NoWarn>$(NoWarn);NU1701;NU1602;NU1604</NoWarn>
   </PropertyGroup>
-  
-  <!-- Debug konfigurácia -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <!-- Assembly info -->
+  <PropertyGroup>
+    <Product>RpaWinUiComponents</Product>
+    <Company>RPA Solutions</Company>
+    <Copyright>Copyright Â© RPA Solutions 2024</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
-  
-  <!-- Release konfigurácia -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
+
 </Project>

@@ -51,12 +51,6 @@
           "System.Diagnostics.DiagnosticSource": "9.0.6"
         }
       },
-      "Microsoft.Windows.SDK.BuildTools": {
-        "type": "Direct",
-        "requested": "[10.0.26100.4188, )",
-        "resolved": "10.0.26100.4188",
-        "contentHash": "sjksqXKnxleoY9qvKPS/fsiGKZ8ZYjwDTfSQvfv6gETTtQQIqZRIhCZCZ+rgjFjS6ZVjjn7iRjT/X64v25IEyA=="
-      },
       "Microsoft.WindowsAppSDK": {
         "type": "Direct",
         "requested": "[1.7.250606001, )",
@@ -318,6 +312,11 @@
         "type": "Transitive",
         "resolved": "1.0.2903.40",
         "contentHash": "THrzYAnJgE3+cNH+9Epr44XjoZoRELdVpXlWGPs6K9C9G6TqyDfVCeVAR/Er8ljLitIUX5gaSkPsy9wRhD1sgQ=="
+      },
+      "Microsoft.Windows.SDK.BuildTools": {
+        "type": "Transitive",
+        "resolved": "10.0.22621.756",
+        "contentHash": "7ZL2sFSioYm1Ry067Kw1hg0SCcW5kuVezC2SwjGbcPE61Nn+gTbH86T73G3LcEOVj0S3IZzNuE/29gZvOLS7VA=="
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "Transitive",

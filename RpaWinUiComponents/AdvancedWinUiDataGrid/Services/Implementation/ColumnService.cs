@@ -1,11 +1,12 @@
-﻿//Services/Implementation/ColumnService.cs
+﻿//Services/Implementation/ColumnService.cs - OPRAVENÝ
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Models;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Interfaces;
+// ALIAS pre riešenie konfliktu
+using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
 
 namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
 {
@@ -20,16 +21,16 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             _logger = logger;
         }
 
-        public List<ColumnDefinition> ProcessColumnDefinitions(List<ColumnDefinition> columns)
+        public List<DataGridColumnDefinition> ProcessColumnDefinitions(List<DataGridColumnDefinition> columns)
         {
             try
             {
                 _logger.LogDebug("Processing {Count} column definitions", columns?.Count ?? 0);
 
-                var processedColumns = new List<ColumnDefinition>();
+                var processedColumns = new List<DataGridColumnDefinition>();
                 var existingNames = new List<string>();
 
-                foreach (var column in columns ?? new List<ColumnDefinition>())
+                foreach (var column in columns ?? new List<DataGridColumnDefinition>())
                 {
                     if (!column.IsValid(out var errorMessage))
                     {
@@ -52,7 +53,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             {
                 _logger.LogError(ex, "Error processing column definitions");
                 OnErrorOccurred(new ComponentErrorEventArgs(ex, "ProcessColumnDefinitions"));
-                return columns ?? new List<ColumnDefinition>();
+                return columns ?? new List<DataGridColumnDefinition>();
             }
         }
 
@@ -83,10 +84,10 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             }
         }
 
-        public ColumnDefinition CreateDeleteActionColumn()
+        public DataGridColumnDefinition CreateDeleteActionColumn()
         {
             _logger.LogDebug("Creating DeleteAction column");
-            return new ColumnDefinition
+            return new DataGridColumnDefinition
             {
                 Name = "DeleteAction",
                 DataType = typeof(object),
@@ -100,10 +101,10 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             };
         }
 
-        public ColumnDefinition CreateValidAlertsColumn()
+        public DataGridColumnDefinition CreateValidAlertsColumn()
         {
             _logger.LogDebug("Creating ValidAlerts column");
-            return new ColumnDefinition
+            return new DataGridColumnDefinition
             {
                 Name = "ValidAlerts",
                 DataType = typeof(string),
@@ -124,11 +125,11 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             return isSpecial;
         }
 
-        public List<ColumnDefinition> ReorderSpecialColumns(List<ColumnDefinition> columns)
+        public List<DataGridColumnDefinition> ReorderSpecialColumns(List<DataGridColumnDefinition> columns)
         {
             try
             {
-                var result = new List<ColumnDefinition>();
+                var result = new List<DataGridColumnDefinition>();
 
                 var normalColumns = columns.Where(c => !IsSpecialColumn(c.Name)).ToList();
                 result.AddRange(normalColumns);
@@ -162,7 +163,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             }
         }
 
-        public void ValidateColumnDefinitions(List<ColumnDefinition> columns)
+        public void ValidateColumnDefinitions(List<DataGridColumnDefinition> columns)
         {
             try
             {

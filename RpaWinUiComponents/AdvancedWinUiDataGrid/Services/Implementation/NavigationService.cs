@@ -1,4 +1,4 @@
-﻿//Services/Implementation/NavigationService.cs
+﻿//Services/Implementation/NavigationService.cs - OPRAVENÝ
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Models;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Interfaces;
+// ALIAS pre riešenie konfliktu
+using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
 
 namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
 {
@@ -13,7 +15,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
     {
         private readonly ILogger<NavigationService> _logger;
         private List<DataGridRow> _rows = new();
-        private List<ColumnDefinition> _columns = new();
+        private List<DataGridColumnDefinition> _columns = new();
         private int _currentRowIndex = -1;
         private int _currentColumnIndex = -1;
         private DataGridCell? _currentCell;
@@ -43,7 +45,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
         public int CurrentRowIndex => _currentRowIndex;
         public int CurrentColumnIndex => _currentColumnIndex;
 
-        public void Initialize(List<DataGridRow> rows, List<ColumnDefinition> columns)
+        public void Initialize(List<DataGridRow> rows, List<DataGridColumnDefinition> columns)
         {
             try
             {
@@ -308,7 +310,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
         /// <summary>
         /// Získa zoznam editovateľných stĺpcov (bez špeciálnych stĺpcov)
         /// </summary>
-        private List<ColumnDefinition> GetEditableColumns()
+        private List<DataGridColumnDefinition> GetEditableColumns()
         {
             return _columns.Where(c => !IsSpecialColumn(c.Name)).ToList();
         }

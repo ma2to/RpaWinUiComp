@@ -8,42 +8,21 @@
     <UseWinUI>true</UseWinUI>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
-    <!-- KRITICKÉ pre .NET 8 -->
     <UseRidGraph>true</UseRidGraph>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
-
-    <!-- NuGet Package Metadata -->
-    <PackageId>RpaWinUiComponents</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
-    <Authors>RPA Solutions</Authors>
-    <Company>RPA Solutions</Company>
-    <Product>RpaWinUiComponents</Product>
-    <Description>Pokročilý WinUI 3 DataGrid komponent s real-time validáciou, copy/paste funkcionalitou a Clean Architecture.</Description>
-    <PackageTags>WinUI3;DataGrid;Validation;MVVM;CleanArchitecture;RPA</PackageTags>
-    <PackageProjectUrl>https://github.com/rpasolutions/RpaWinUiComponents</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/rpasolutions/RpaWinUiComponents</RepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-  <!-- Dependencies - AKTUALIZOVANÉ verzie -->
+  <!-- Dependencies -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4188" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
 
-  <!-- Odstránené Microsoft.Windows.SDK.BuildTools - spôsobuje konflikty -->
-
-  <!-- XAML súbory - EXPLICITNE definované -->
+  <!-- XAML súbory -->
   <ItemGroup>
     <Page Include="AdvancedWinUiDataGrid\Views\AdvancedDataGridControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -62,33 +41,11 @@
     </Compile>
   </ItemGroup>
 
-  <!-- Package Content Files -->
-  <ItemGroup>
-    <None Include="readme.md" Pack="true" PackagePath="\" Condition="Exists('readme.md')" />
-    <None Include="build\RpaWinUiComponents.targets" Pack="true" PackagePath="build\" Condition="Exists('build\RpaWinUiComponents.targets')" />
-  </ItemGroup>
-
-  <!-- Build Configuration -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
-
   <!-- XML Documentation -->
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
   </PropertyGroup>
-
-  <!-- Force XAML regeneration -->
-  <Target Name="ForceXamlGeneration" BeforeTargets="Build">
-    <Message Text="Forcing XAML generation for Library project..." Importance="high" />
-  </Target>
 
 </Project>

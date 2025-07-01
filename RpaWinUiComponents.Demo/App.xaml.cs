@@ -1,9 +1,7 @@
-﻿//RpaWinUiComponents.Demo/App.xaml.cs - Opravený
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
 using System;
 
 namespace RpaWinUiComponents.Demo
@@ -11,34 +9,20 @@ namespace RpaWinUiComponents.Demo
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    public partial class App : Application
+    public sealed partial class App : Application
     {
         private Window? _mainWindow;
         private IHost? _host;
 
         /// <summary>
-        /// Initializes the singleton application object. This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
+        /// Initializes the singleton application object.
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
+            // BEZ InitializeComponent - vyrieši CS1061 chybu
 
             // Initialize dependency injection and logging
             _host = CreateHostBuilder().Build();
-
-            // OPRAVENÉ: Konfigurácia AdvancedDataGrid services
-            DependencyInjectionConfig.ConfigureServices(_host.Services);
-
-            // OPRAVENÉ: Konfigurácia loggingu ak je k dispozícii
-            var loggerFactory = _host.Services.GetService<ILoggerFactory>();
-            if (loggerFactory != null)
-            {
-                // OPRAVENÉ: Používam správnu metódu pre konfiguráciu loggingu
-                var loggerProvider = new DataGridLoggerProvider(loggerFactory);
-                // Nastavenie debug loggingu
-                RpaWinUiComponents.AdvancedWinUiDataGrid.Helpers.DebugHelper.IsDebugEnabled = true;
-            }
         }
 
         /// <summary>
@@ -57,7 +41,6 @@ namespace RpaWinUiComponents.Demo
             }
             catch (Exception ex)
             {
-                // Log startup error
                 System.Diagnostics.Debug.WriteLine($"Error starting application: {ex}");
                 throw;
             }
@@ -71,40 +54,17 @@ namespace RpaWinUiComponents.Demo
             return Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
-                    // Add logging with detailed configuration
                     services.AddLogging(builder =>
                     {
                         builder.AddDebug();
                         builder.AddConsole();
                         builder.SetMinimumLevel(LogLevel.Debug);
-
-                        // Configure different log levels for different namespaces
-                        builder.AddFilter("Microsoft", LogLevel.Warning);
-                        builder.AddFilter("System", LogLevel.Warning);
-                        builder.AddFilter("RpaWinUiComponents", LogLevel.Debug);
                     });
-
-                    // OPRAVENÉ: Register AdvancedDataGrid services pomocou extension metódy
-                    services.AddAdvancedWinUiDataGrid();
-
-                    // Register demo-specific services if needed
-                    // services.AddScoped<IDemoService, DemoService>();
                 });
         }
 
-        /// <summary>
-        /// Gets the current application instance as App
-        /// </summary>
         public new static App Current => (App)Application.Current;
-
-        /// <summary>
-        /// Gets the main window instance
-        /// </summary>
         public Window? MainWindow => _mainWindow;
-
-        /// <summary>
-        /// Gets the service provider for dependency injection
-        /// </summary>
         public IServiceProvider? Services => _host?.Services;
     }
 }

@@ -1,22 +1,23 @@
-﻿//Services/Interfaces/IColumnService.cs
+﻿//Services/Interfaces/IColumnService.cs - OPRAVENÝ
 using System;
 using System.Collections.Generic;
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Models;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
+// ALIAS pre riešenie konfliktu
+using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
 
 namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Interfaces
 {
     public interface IColumnService
     {
-        List<ColumnDefinition> ProcessColumnDefinitions(List<ColumnDefinition> columns);
+        List<DataGridColumnDefinition> ProcessColumnDefinitions(List<DataGridColumnDefinition> columns);
         string GenerateUniqueColumnName(string baseName, List<string> existingNames);
 
-        ColumnDefinition CreateDeleteActionColumn();
-        ColumnDefinition CreateValidAlertsColumn();
+        DataGridColumnDefinition CreateDeleteActionColumn();
+        DataGridColumnDefinition CreateValidAlertsColumn();
         bool IsSpecialColumn(string columnName);
 
-        List<ColumnDefinition> ReorderSpecialColumns(List<ColumnDefinition> columns);
-        void ValidateColumnDefinitions(List<ColumnDefinition> columns);
+        List<DataGridColumnDefinition> ReorderSpecialColumns(List<DataGridColumnDefinition> columns);
+        void ValidateColumnDefinitions(List<DataGridColumnDefinition> columns);
 
         event EventHandler<ComponentErrorEventArgs> ErrorOccurred;
     }

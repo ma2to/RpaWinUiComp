@@ -1,4 +1,4 @@
-﻿//Services/Implementation/ClipboardService.cs
+﻿//Services/Implementation/ClipboardService.cs - OPRAVENÝ
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,8 @@ using Windows.ApplicationModel.DataTransfer;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Models;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Interfaces;
+// ALIAS pre riešenie konfliktu
+using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
 
 namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
 {
@@ -240,7 +242,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             }
         }
 
-        public async Task<bool> PasteToPositionAsync(int startRowIndex, int startColumnIndex, List<DataGridRow> rows, List<ColumnDefinition> columns)
+        public async Task<bool> PasteToPositionAsync(int startRowIndex, int startColumnIndex, List<DataGridRow> rows, List<DataGridColumnDefinition> columns)
         {
             try
             {
@@ -306,7 +308,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.Services.Implementation
             }
         }
 
-        private DataGridRow CreateEmptyRow(int rowIndex, List<ColumnDefinition> columns)
+        private DataGridRow CreateEmptyRow(int rowIndex, List<DataGridColumnDefinition> columns)
         {
             var row = new DataGridRow(rowIndex);
 
