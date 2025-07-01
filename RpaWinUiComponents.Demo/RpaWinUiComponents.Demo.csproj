@@ -6,13 +6,16 @@
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>RpaWinUiComponents.Demo</RootNamespace>
     <UseWinUI>true</UseWinUI>
-    <EnableMsixTooling>true</EnableMsixTooling>
+    <EnableMsixTooling>false</EnableMsixTooling>
     <Platforms>x86;x64;ARM64</Platforms>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <UseRidGraph>true</UseRidGraph>
     <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
-    <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <SelfContained>true</SelfContained>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <!-- ✅ Suppress duplicitné Page warning -->
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +28,7 @@
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
 
+  <!-- ✅ Explicitne definované XAML súbory -->
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -34,6 +38,7 @@
     </Page>
   </ItemGroup>
 
+  <!-- ✅ Code-behind súbory -->
   <ItemGroup>
     <Compile Update="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -43,13 +48,8 @@
     </Compile>
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Assets\**\*" />
-    <None Include="Package.appxmanifest" />
-  </ItemGroup>
-
-  <ItemGroup>
+  <!--<ItemGroup>
     <ProjectReference Include="..\RpaWinUiComponents\RpaWinUiComponents.csproj" />
-  </ItemGroup>
+  </ItemGroup>-->
 
 </Project>

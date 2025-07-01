@@ -1,14 +1,8 @@
-<!-- ===================================================================== -->
-<!-- SÚBOR: RpaWinUiComponents.Demo/MainWindow.xaml - KOMPLETNÝ OPRAVENÝ -->
-<!-- Všetky chýbajúce elementy pridané -->
-<!-- ===================================================================== -->
-
-<?xml version="1.0" encoding="utf-8"?>
 <Window
     x:Class="RpaWinUiComponents.Demo.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="RpaWinUiComponents Demo - Advanced DataGrid">
+    Title="RpaWinUiComponents Demo">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -20,149 +14,87 @@
 
         <!-- Title Bar -->
         <Border Grid.Row="0" Background="#2C3E50" Padding="16,8">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="🚀" FontSize="24" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                <TextBlock Text="RpaWinUiComponents Demo" 
-                           FontSize="18" 
-                           FontWeight="Bold" 
-                           Foreground="White" 
-                           VerticalAlignment="Center"/>
-                <TextBlock Text="Advanced DataGrid with Real-time Validation" 
-                           FontSize="12" 
-                           Foreground="#BDC3C7" 
-                           VerticalAlignment="Center" 
-                           Margin="16,0,0,0"/>
-            </StackPanel>
+            <TextBlock Text="RpaWinUiComponents Demo" 
+                       FontSize="18" 
+                       FontWeight="Bold" 
+                       Foreground="White"/>
         </Border>
 
         <!-- Controls Panel -->
-        <Border Grid.Row="1" Background="#ECF0F1" Padding="16,12" BorderBrush="#BDC3C7" BorderThickness="0,0,0,1">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Padding="16,12" Background="#ECF0F1" Spacing="8">
+            <Button x:Name="LoadSampleDataButton" 
+                    Content="Načítať dáta" 
+                    Click="OnLoadSampleDataClick"
+                    Background="#3498DB" 
+                    Foreground="White"/>
+
+            <Button x:Name="ValidateAllButton" 
+                    Content="Validovať" 
+                    Click="OnValidateAllClick"
+                    Background="#27AE60" 
+                    Foreground="White"/>
+
+            <Button x:Name="ClearDataButton" 
+                    Content="Vymazať" 
+                    Click="OnClearDataClick"
+                    Background="#E74C3C" 
+                    Foreground="White"/>
+
+            <Button x:Name="ExportDataButton" 
+                    Content="Export" 
+                    Click="OnExportDataClick"
+                    Background="#F39C12" 
+                    Foreground="White"/>
+
+            <Button x:Name="RemoveEmptyRowsButton" 
+                    Content="Odstrániť prázdne" 
+                    Click="OnRemoveEmptyRowsClick"
+                    Background="#9B59B6" 
+                    Foreground="White"/>
+
+            <ComboBox x:Name="ThrottlingComboBox" 
+                      SelectedIndex="1"
+                      SelectionChanged="OnThrottlingChanged">
+                <ComboBoxItem Content="Disabled" Tag="Disabled"/>
+                <ComboBoxItem Content="Fast" Tag="Fast"/>
+                <ComboBoxItem Content="Normal" Tag="Default"/>
+                <ComboBoxItem Content="Slow" Tag="Slow"/>
+            </ComboBox>
+
+            <CheckBox x:Name="DebugLoggingCheckBox" 
+                      Content="Debug" 
+                      IsChecked="True"
+                      Checked="OnDebugLoggingChanged"
+                      Unchecked="OnDebugLoggingChanged"/>
+        </StackPanel>
+
+        <!-- Main Content -->
+        <Border Grid.Row="2" Background="White" Margin="8">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Action Buttons -->
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
-                    <!-- OPRAVA: Všetky buttony s správnymi menami -->
-                    <Button x:Name="LoadSampleDataButton" 
-                            Content="📊 Načítať ukážkové dáta" 
-                            Click="OnLoadSampleDataClick"
-                            Background="#3498DB" 
-                            Foreground="White" 
-                            Padding="12,6" 
-                            CornerRadius="4"/>
-
-                    <Button x:Name="ValidateAllButton" 
-                            Content="✅ Validovať všetko" 
-                            Click="OnValidateAllClick"
-                            Background="#27AE60" 
-                            Foreground="White" 
-                            Padding="12,6" 
-                            CornerRadius="4"/>
-
-                    <Button x:Name="ClearDataButton" 
-                            Content="🗑️ Vymazať dáta" 
-                            Click="OnClearDataClick"
-                            Background="#E74C3C" 
-                            Foreground="White" 
-                            Padding="12,6" 
-                            CornerRadius="4"/>
-
-                    <Button x:Name="ExportDataButton" 
-                            Content="💾 Export CSV" 
-                            Click="OnExportDataClick"
-                            Background="#F39C12" 
-                            Foreground="White" 
-                            Padding="12,6" 
-                            CornerRadius="4"/>
-
-                    <Button x:Name="RemoveEmptyRowsButton" 
-                            Content="🧹 Odstrániť prázdne riadky" 
-                            Click="OnRemoveEmptyRowsClick"
-                            Background="#9B59B6" 
-                            Foreground="White" 
-                            Padding="12,6" 
-                            CornerRadius="4"/>
-                </StackPanel>
-
-                <!-- Settings Panel -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                    <!-- OPRAVA: Throttling ComboBox -->
-                    <ComboBox x:Name="ThrottlingComboBox" 
-                              Header="Throttling:" 
-                              SelectedIndex="1"
-                              MinWidth="120"
-                              SelectionChanged="OnThrottlingChanged">
-                        <ComboBoxItem Content="Disabled" Tag="Disabled"/>
-                        <ComboBoxItem Content="Fast (150ms)" Tag="Fast"/>
-                        <ComboBoxItem Content="Normal (300ms)" Tag="Default"/>
-                        <ComboBoxItem Content="Slow (500ms)" Tag="Slow"/>
-                    </ComboBox>
-
-                    <!-- OPRAVA: Debug Logging CheckBox -->
-                    <CheckBox x:Name="DebugLoggingCheckBox" 
-                              Content="Debug Logging" 
-                              IsChecked="True"
-                              Checked="OnDebugLoggingChanged"
-                              Unchecked="OnDebugLoggingChanged"
-                              VerticalAlignment="Center"/>
-                </StackPanel>
+                <TextBlock Text="DataGrid sa načíta po inicializácii..." 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"/>
+                <Border x:Name="DataGridPlaceholder" Background="Transparent"/>
             </Grid>
-        </Border>
-
-        <!-- Main DataGrid Container -->
-        <Border Grid.Row="2" Background="White" BorderBrush="#BDC3C7" BorderThickness="1" Margin="8">
-            <ScrollViewer ZoomMode="Disabled" 
-                          HorizontalScrollMode="Auto" 
-                          VerticalScrollMode="Auto">
-                <Grid>
-                    <!-- Placeholder Text -->
-                    <TextBlock Text="DataGrid sa načíta po inicializácii..." 
-                               FontSize="16" 
-                               Foreground="#6C757D"
-                               HorizontalAlignment="Center" 
-                               VerticalAlignment="Center"/>
-
-                    <!-- OPRAVA: DataGrid Placeholder Element -->
-                    <Border x:Name="DataGridPlaceholder" Background="Transparent"/>
-                </Grid>
-            </ScrollViewer>
         </Border>
 
         <!-- Status Bar -->
         <Border Grid.Row="3" Background="#34495E" Padding="16,8">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- OPRAVA: Všetky status text blocky -->
+            <StackPanel Orientation="Horizontal">
                 <TextBlock x:Name="StatusTextBlock" 
-                           Grid.Column="0"
-                           Text="Pripravené - Načítajte ukážkové dáta alebo začnite písať do tabulky"
-                           Foreground="#ECF0F1" 
-                           VerticalAlignment="Center" 
-                           FontSize="12"/>
+                           Text="Pripravené"
+                           Foreground="White" 
+                           Margin="0,0,16,0"/>
 
                 <TextBlock x:Name="RowCountTextBlock" 
-                           Grid.Column="1"
                            Text="Riadky: 0" 
                            Foreground="#95A5A6" 
-                           VerticalAlignment="Center" 
-                           FontSize="12" 
-                           Margin="16,0"/>
+                           Margin="0,0,16,0"/>
 
                 <TextBlock x:Name="ValidationStatusTextBlock" 
-                           Grid.Column="2"
                            Text="Validné: ✅" 
-                           Foreground="#2ECC71" 
-                           VerticalAlignment="Center" 
-                           FontSize="12"/>
-            </Grid>
+                           Foreground="#2ECC71"/>
+            </StackPanel>
         </Border>
     </Grid>
 </Window>
