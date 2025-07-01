@@ -1,8 +1,4 @@
-﻿// GlobalUsings.cs - Pridajte do oboch projektov (RpaWinUiComponents a RpaWinUiComponents.Demo)
-// Tento súbor vyrieši množstvo namespace problémov
-
-// GlobalUsings.cs - Pridajte alias pre riešenie konfliktov
-global using System;
+﻿global using System;
 global using System.Collections.Generic;
 global using System.Linq;
 global using System.Threading.Tasks;
@@ -20,8 +16,10 @@ global using Microsoft.UI.Xaml.Input;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 
-// OPRAVA: Aliasy pre riešenie konfliktov s ColumnDefinition
+// KRITICKÁ OPRAVA: Aliasy pre riešenie konfliktov s ColumnDefinition
 global using WinUIGrid = Microsoft.UI.Xaml.Controls.Grid;
 global using WinUIRowDefinition = Microsoft.UI.Xaml.Controls.RowDefinition;
 global using WinUIColumnDefinition = Microsoft.UI.Xaml.Controls.ColumnDefinition;
+
+// HLAVNÝ ALIAS - tento rieši CS1537 chyby
 global using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;

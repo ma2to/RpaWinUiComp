@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿// RpaWinUiComponents.Demo/MainWindow.xaml.cs - KOMPLETNÝ OPRAVENÝ
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -7,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
 using ValidationRule = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ValidationRule;
 using ThrottlingConfig = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ThrottlingConfig;
 
@@ -122,7 +122,7 @@ namespace RpaWinUiComponents.Demo
 
         #endregion
 
-        #region Button Event Handlers
+        #region Button Event Handlers - VŠETKY METÓDY PRIDANÉ
 
         private async void OnLoadSampleDataClick(object sender, RoutedEventArgs e)
         {
