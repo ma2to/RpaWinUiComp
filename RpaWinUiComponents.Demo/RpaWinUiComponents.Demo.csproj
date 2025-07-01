@@ -10,7 +10,6 @@
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
-    <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <EnableMsixTooling>true</EnableMsixTooling>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <AssemblyTitle>RpaWinUiComponents Demo</AssemblyTitle>
@@ -19,9 +18,19 @@
     <AssemblyProduct>RpaWinUiComponents</AssemblyProduct>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
+
+    <!-- CRITICAL: Disable problematic features -->
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <DisableXamlMetadataProvider>false</DisableXamlMetadataProvider>
+    <XamlCodeGenerationControlFlags>None</XamlCodeGenerationControlFlags>
+
+    <!-- Performance optimizations -->
+    <UseRidGraph>true</UseRidGraph>
+    <SelfContained>false</SelfContained>
+    <RuntimeFrameworkVersion>8.0.0</RuntimeFrameworkVersion>
   </PropertyGroup>
 
-  <!-- Obsah balíka -->
+  <!-- CRITICAL: Obsah balíka s proper ordering -->
   <ItemGroup>
     <Content Include="Assets\**\*" />
   </ItemGroup>
@@ -34,20 +43,26 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.6" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4188" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
-    <!--<PackageReference Include="RpaWinUiComponents" Version="1.0.0" />-->
+    <PackageReference Include="RpaWinUiComponents" Version="1.0.0" />
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- Project references -->
+  <!--<ItemGroup>
     <ProjectReference Include="..\RpaWinUiComponents\RpaWinUiComponents.csproj" />
+  </ItemGroup>-->
+
+  <!-- CRITICAL: EXPLICITNE definované XAML súbory V SPRÁVNOM PORADÍ -->
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
-  <!-- EXPLICITNE definované XAML súbory -->
-  <ItemGroup>
-    <Page Include="MainWindow.xaml" />
-  </ItemGroup>
-  
-  <!-- Code Behind Files -->
+  <!-- CRITICAL: Code Behind Files s proper závislostami -->
   <ItemGroup>
     <Compile Update="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -62,35 +77,62 @@
     <None Include="Package.appxmanifest" />
   </ItemGroup>
 
-  <!-- Build konfigurácie -->
+  <!-- Build konfigurácie s error handling -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <EnableMsixTooling>true</EnableMsixTooling>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <EnableMsixTooling>true</EnableMsixTooling>
     <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <EnableMsixTooling>true</EnableMsixTooling>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <EnableMsixTooling>true</EnableMsixTooling>
     <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <EnableMsixTooling>true</EnableMsixTooling>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <EnableMsixTooling>true</EnableMsixTooling>
     <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
+
+  <!-- CRITICAL: Post-build cleanup target -->
+  <Target Name="CleanupTemporaryFiles" AfterTargets="Build">
+    <ItemGroup>
+      <TempFiles Include="$(IntermediateOutputPath)\**\*.tmp" />
+      <TempFiles Include="$(IntermediateOutputPath)\**\*.cache" />
+    </ItemGroup>
+    <Delete Files="@(TempFiles)" ContinueOnError="true" />
+  </Target>
 
 </Project>
