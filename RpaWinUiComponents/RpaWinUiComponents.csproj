@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>RpaWinUiComponents</RootNamespace>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
@@ -12,6 +12,7 @@
     <!-- KRITICKÉ pre .NET 8 -->
     <UseRidGraph>true</UseRidGraph>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 
     <!-- NuGet Package Metadata -->
     <PackageId>RpaWinUiComponents</PackageId>
@@ -39,6 +40,8 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
+
+  <!-- Odstránené Microsoft.Windows.SDK.BuildTools - spôsobuje konflikty -->
 
   <!-- XAML súbory - EXPLICITNE definované -->
   <ItemGroup>

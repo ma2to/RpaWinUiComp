@@ -2,27 +2,11 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
-using Windows.Storage.Pickers;
-
-// OPRAVENÉ using statements - podľa skutočnej štruktúry
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Views;
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Events;
-using RpaWinUiComponents.AdvancedWinUiDataGrid.Models;
-
-// Alias pre riešenie konfliktu ColumnDefinition
-using DataGridColumnDefinition = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ColumnDefinition;
-using ValidationRule = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ValidationRule;
-using ThrottlingConfig = RpaWinUiComponents.AdvancedWinUiDataGrid.Models.ThrottlingConfig;
 
 namespace RpaWinUiComponents.Demo
 {
@@ -31,20 +15,19 @@ namespace RpaWinUiComponents.Demo
         private readonly ILogger<MainWindow> _logger;
         private readonly IServiceProvider _serviceProvider;
         private bool _isInitialized = false;
+        private AdvancedWinUiDataGrid.AdvancedWinUiDataGridControl? _dataGridControl;
 
         public MainWindow()
         {
             this.InitializeComponent();
 
-            // Setup logging and DI - OPRAVENÉ volania
+            // Setup logging and DI
             _serviceProvider = CreateServiceProvider();
             _logger = _serviceProvider.GetRequiredService<ILogger<MainWindow>>();
 
-            // OPRAVENÉ: Používam skutočné triedy namiesto neexistujúcich
-            DependencyInjectionConfig.ConfigureServices(_serviceProvider);
+            // Inicializácia bez custom komponentu najprv
+            _ = InitializeAsync();
 
-            // Initialize DataGrid
-            _ = InitializeDataGridAsync();
             this.Closed += OnWindowClosed;
 
             _logger.LogInformation("Demo MainWindow created");
@@ -56,7 +39,7 @@ namespace RpaWinUiComponents.Demo
         {
             try
             {
-                MainDataGrid?.Dispose();
+                _dataGridControl?.Dispose();
                 _logger.LogInformation("Demo application closed");
             }
             catch (Exception ex)
@@ -67,23 +50,37 @@ namespace RpaWinUiComponents.Demo
 
         #endregion
 
-        #region DataGrid Initialization
+        #region Initialization
 
-        private async Task InitializeDataGridAsync()
+        private async Task InitializeAsync()
         {
             try
             {
+                // Počkáme kým sa UI načíta
+                await Task.Delay(100);
+
+                // Vytvoríme DataGrid programaticky
+                _dataGridControl = new AdvancedWinUiDataGrid.AdvancedWinUiDataGridControl();
+
+                // Nahradíme placeholder
+                if (DataGridPlaceholder.Parent is Grid parentGrid)
+                {
+                    var index = parentGrid.Children.IndexOf(DataGridPlaceholder);
+                    parentGrid.Children.RemoveAt(index);
+                    parentGrid.Children.Insert(index, _dataGridControl);
+                }
+
                 var columns = CreateSampleColumns();
                 var validationRules = CreateSampleValidationRules();
-                var throttling = ThrottlingConfig.Default;
+                var throttling = AdvancedWinUiDataGrid.Models.ThrottlingConfig.Default;
 
-                await MainDataGrid.InitializeAsync(columns, validationRules, throttling, 50);
+                await _dataGridControl.InitializeAsync(columns, validationRules, throttling, 50);
 
                 // Subscribe to events
-                MainDataGrid.ErrorOccurred += OnDataGridError;
+                _dataGridControl.ErrorOccurred += OnDataGridError;
 
                 _isInitialized = true;
-                StatusTextBlock.Text = "DataGrid inicializovaný - pripravený na použitie";
+                UpdateStatusText("DataGrid inicializovaný - pripravený na použitie");
 
                 _logger.LogInformation("DataGrid initialized with {ColumnCount} columns and {RuleCount} validation rules",
                     columns.Count, validationRules.Count);
@@ -91,43 +88,32 @@ namespace RpaWinUiComponents.Demo
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error initializing DataGrid");
-                throw;
+                UpdateStatusText("Chyba pri inicializácii DataGrid");
+                await ShowErrorDialog("Chyba inicializácie", ex.Message);
             }
         }
 
-        private List<DataGridColumnDefinition> CreateSampleColumns()
+        private List<AdvancedWinUiDataGrid.Models.ColumnDefinition> CreateSampleColumns()
         {
-            return new List<DataGridColumnDefinition>
+            return new List<AdvancedWinUiDataGrid.Models.ColumnDefinition>
             {
-                new DataGridColumnDefinition("Meno", typeof(string)) { MinWidth = 100, MaxWidth = 200, Header = "Meno", ToolTip = "Celé meno osoby" },
-                new DataGridColumnDefinition("Priezvisko", typeof(string)) { MinWidth = 100, MaxWidth = 200, Header = "Priezvisko" },
-                new DataGridColumnDefinition("Vek", typeof(int)) { MinWidth = 60, MaxWidth = 100, Header = "Vek" },
-                new DataGridColumnDefinition("Email", typeof(string)) { MinWidth = 150, MaxWidth = 300, Header = "Email" },
-                new DataGridColumnDefinition("Plat", typeof(decimal)) { MinWidth = 100, MaxWidth = 150, Header = "Plat (€)" },
-                new DataGridColumnDefinition("DatumNastupu", typeof(DateTime)) { MinWidth = 120, MaxWidth = 180, Header = "Dátum nástupu" },
-                new DataGridColumnDefinition("Aktívny", typeof(bool)) { MinWidth = 80, MaxWidth = 100, Header = "Aktívny" },
-                new DataGridColumnDefinition("Poznámky", typeof(string)) { MinWidth = 200, MaxWidth = 400, Header = "Poznámky" }
+                new("Meno", typeof(string)) { MinWidth = 100, MaxWidth = 200, Header = "Meno" },
+                new("Priezvisko", typeof(string)) { MinWidth = 100, MaxWidth = 200, Header = "Priezvisko" },
+                new("Vek", typeof(int)) { MinWidth = 60, MaxWidth = 100, Header = "Vek" },
+                new("Email", typeof(string)) { MinWidth = 150, MaxWidth = 300, Header = "Email" },
+                new("Plat", typeof(decimal)) { MinWidth = 100, MaxWidth = 150, Header = "Plat (€)" }
             };
         }
 
-        private List<ValidationRule> CreateSampleValidationRules()
+        private List<AdvancedWinUiDataGrid.Models.ValidationRule> CreateSampleValidationRules()
         {
-            return new List<ValidationRule>
+            return new List<AdvancedWinUiDataGrid.Models.ValidationRule>
             {
-                // Meno - povinné
-                new ValidationRule("Meno", (value, row) => !string.IsNullOrWhiteSpace(value?.ToString()), "Meno je povinné pole")
+                new("Meno", (value, row) => !string.IsNullOrWhiteSpace(value?.ToString()), "Meno je povinné")
                 {
                     RuleName = "Meno_Required"
                 },
-                
-                // Priezvisko - povinné
-                new ValidationRule("Priezvisko", (value, row) => !string.IsNullOrWhiteSpace(value?.ToString()), "Priezvisko je povinné pole")
-                {
-                    RuleName = "Priezvisko_Required"
-                },
-                
-                // Vek - rozsah
-                new ValidationRule("Vek", (value, row) => {
+                new("Vek", (value, row) => {
                     if (value == null || string.IsNullOrWhiteSpace(value.ToString())) return true;
                     if (int.TryParse(value.ToString(), out int age))
                         return age >= 18 && age <= 67;
@@ -135,16 +121,6 @@ namespace RpaWinUiComponents.Demo
                 }, "Vek musí byť medzi 18 a 67 rokov")
                 {
                     RuleName = "Vek_Range"
-                },
-                
-                // Email - formát
-                new ValidationRule("Email", (value, row) => {
-                    if (value == null || string.IsNullOrWhiteSpace(value.ToString())) return true;
-                    var email = value.ToString();
-                    return email?.Contains("@") == true && email.Contains(".") && email.Length > 5;
-                }, "Neplatný formát emailu")
-                {
-                    RuleName = "Email_Format"
                 }
             };
         }
@@ -157,28 +133,26 @@ namespace RpaWinUiComponents.Demo
         {
             try
             {
-                if (!_isInitialized)
+                if (!_isInitialized || _dataGridControl == null)
                 {
                     await ShowErrorDialog("Chyba", "DataGrid nie je inicializovaný");
                     return;
                 }
 
-                StatusTextBlock.Text = "Načítavam ukážkové dáta...";
+                UpdateStatusText("Načítavam ukážkové dáta...");
                 LoadSampleDataButton.IsEnabled = false;
 
                 var sampleData = CreateSampleData();
-                await MainDataGrid.LoadDataAsync(sampleData);
+                await _dataGridControl.LoadDataAsync(sampleData);
 
-                UpdateStatusBar();
-                StatusTextBlock.Text = $"Načítaných {sampleData.Count} ukážkových záznamov";
-
+                UpdateStatusText($"Načítaných {sampleData.Count} ukážkových záznamov");
                 _logger.LogInformation("Sample data loaded: {RecordCount} records", sampleData.Count);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error loading sample data");
                 await ShowErrorDialog("Chyba pri načítaní dát", ex.Message);
-                StatusTextBlock.Text = "Chyba pri načítaní ukážkových dát";
+                UpdateStatusText("Chyba pri načítaní ukážkových dát");
             }
             finally
             {
@@ -190,15 +164,13 @@ namespace RpaWinUiComponents.Demo
         {
             try
             {
-                if (!_isInitialized) return;
+                if (!_isInitialized || _dataGridControl == null) return;
 
-                StatusTextBlock.Text = "Validujem všetky dáta...";
+                UpdateStatusText("Validujem všetky dáta...");
                 ValidateAllButton.IsEnabled = false;
 
-                var isValid = await MainDataGrid.ValidateAllRowsAsync();
-
-                UpdateStatusBar();
-                StatusTextBlock.Text = isValid ? "Všetky dáta sú validné ✅" : "Nájdené validačné chyby ❌";
+                var isValid = await _dataGridControl.ValidateAllRowsAsync();
+                UpdateStatusText(isValid ? "Všetky dáta sú validné ✅" : "Nájdené validačné chyby ❌");
 
                 _logger.LogInformation("Validation completed: {IsValid}", isValid);
             }
@@ -217,18 +189,16 @@ namespace RpaWinUiComponents.Demo
         {
             try
             {
-                if (!_isInitialized) return;
+                if (!_isInitialized || _dataGridControl == null) return;
 
                 var result = await ShowConfirmDialog("Potvrdenie", "Naozaj chcete vymazať všetky dáta?");
                 if (!result) return;
 
-                StatusTextBlock.Text = "Mažem dáta...";
+                UpdateStatusText("Mažem dáta...");
                 ClearDataButton.IsEnabled = false;
 
-                await MainDataGrid.ClearAllDataAsync();
-
-                UpdateStatusBar();
-                StatusTextBlock.Text = "Všetky dáta vymazané";
+                await _dataGridControl.ClearAllDataAsync();
+                UpdateStatusText("Všetky dáta vymazané");
 
                 _logger.LogInformation("All data cleared");
             }
@@ -247,27 +217,20 @@ namespace RpaWinUiComponents.Demo
         {
             try
             {
-                if (!_isInitialized) return;
+                if (!_isInitialized || _dataGridControl == null) return;
 
-                StatusTextBlock.Text = "Exportujem dáta...";
+                UpdateStatusText("Exportujem dáta...");
                 ExportDataButton.IsEnabled = false;
 
-                var dataTable = await MainDataGrid.ExportToDataTableAsync();
+                var dataTable = await _dataGridControl.ExportToDataTableAsync();
+                UpdateStatusText($"Exportovaných {dataTable.Rows.Count} záznamov");
 
-                if (dataTable.Rows.Count == 0)
-                {
-                    await ShowInfoDialog("Export", "Žiadne dáta na export");
-                    return;
-                }
-
-                StatusTextBlock.Text = $"Exportovaných {dataTable.Rows.Count} záznamov";
                 _logger.LogInformation("Data exported: {RecordCount} records", dataTable.Rows.Count);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error exporting data");
                 await ShowErrorDialog("Chyba pri exporte", ex.Message);
-                StatusTextBlock.Text = "Chyba pri exporte dát";
             }
             finally
             {
@@ -279,15 +242,13 @@ namespace RpaWinUiComponents.Demo
         {
             try
             {
-                if (!_isInitialized) return;
+                if (!_isInitialized || _dataGridControl == null) return;
 
-                StatusTextBlock.Text = "Odstraňujem prázdne riadky...";
+                UpdateStatusText("Odstraňujem prázdne riadky...");
                 RemoveEmptyRowsButton.IsEnabled = false;
 
-                await MainDataGrid.RemoveEmptyRowsAsync();
-
-                UpdateStatusBar();
-                StatusTextBlock.Text = "Prázdne riadky odstránené";
+                await _dataGridControl.RemoveEmptyRowsAsync();
+                UpdateStatusText("Prázdne riadky odstránené");
 
                 _logger.LogInformation("Empty rows removed");
             }
@@ -306,16 +267,16 @@ namespace RpaWinUiComponents.Demo
 
         #region Settings Event Handlers
 
-        private async void OnThrottlingChanged(object sender, SelectionChangedEventArgs e)
+        private void OnThrottlingChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                if (!_isInitialized || ThrottlingComboBox.SelectedItem is not ComboBoxItem item)
-                    return;
-
-                var tag = item.Tag?.ToString();
-                _logger.LogInformation("Throttling changed to: {ThrottlingMode}", tag);
-                StatusTextBlock.Text = $"Throttling nastavený na: {item.Content}";
+                if (ThrottlingComboBox.SelectedItem is ComboBoxItem item)
+                {
+                    var tag = item.Tag?.ToString();
+                    _logger.LogInformation("Throttling changed to: {ThrottlingMode}", tag);
+                    UpdateStatusText($"Throttling nastavený na: {item.Content}");
+                }
             }
             catch (Exception ex)
             {
@@ -328,8 +289,10 @@ namespace RpaWinUiComponents.Demo
             try
             {
                 var isEnabled = DebugLoggingCheckBox.IsChecked == true;
+                AdvancedWinUiDataGrid.AdvancedWinUiDataGridControl.Configuration.SetDebugLogging(isEnabled);
+
                 _logger.LogInformation("Debug logging {Status}", isEnabled ? "enabled" : "disabled");
-                StatusTextBlock.Text = $"Debug logging {(isEnabled ? "zapnutý" : "vypnutý")}";
+                UpdateStatusText($"Debug logging {(isEnabled ? "zapnutý" : "vypnutý")}");
             }
             catch (Exception ex)
             {
@@ -341,13 +304,13 @@ namespace RpaWinUiComponents.Demo
 
         #region DataGrid Event Handlers
 
-        private async void OnDataGridError(object? sender, ComponentErrorEventArgs e)
+        private async void OnDataGridError(object? sender, AdvancedWinUiDataGrid.Events.ComponentErrorEventArgs e)
         {
             try
             {
                 _logger.LogError(e.Exception, "DataGrid error in operation: {Operation}", e.Operation);
                 await ShowErrorDialog($"Chyba v DataGrid ({e.Operation})", e.Exception.Message);
-                StatusTextBlock.Text = $"Chyba: {e.Operation}";
+                UpdateStatusText($"Chyba: {e.Operation}");
             }
             catch (Exception ex)
             {
@@ -362,56 +325,35 @@ namespace RpaWinUiComponents.Demo
         private List<Dictionary<string, object?>> CreateSampleData()
         {
             var random = new Random();
-            var firstNames = new[] { "Ján", "Peter", "Mária", "Anna", "Michal", "Eva", "Tomáš", "Katarína", "Martin", "Zuzana" };
-            var lastNames = new[] { "Novák", "Svoboda", "Dvořák", "Černý", "Procházka", "Krejčí", "Novotný", "Kratochvíl", "Fiala", "Mareš" };
-            var domains = new[] { "gmail.com", "azet.sk", "centrum.sk", "post.sk", "outlook.com" };
+            var firstNames = new[] { "Ján", "Peter", "Mária", "Anna", "Michal" };
+            var lastNames = new[] { "Novák", "Svoboda", "Dvořák", "Černý", "Procházka" };
 
             var data = new List<Dictionary<string, object?>>();
 
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < 10; i++)
             {
-                var firstName = firstNames[random.Next(firstNames.Length)];
-                var lastName = lastNames[random.Next(lastNames.Length)];
-                var age = random.Next(22, 65);
-                var salary = random.Next(800, 8000);
-                var startDate = DateTime.Now.AddDays(-random.Next(30, 3650));
-                var isActive = random.Next(100) > 10;
-
-                var email = i % 7 == 0 ? "invalid-email" : $"{firstName.ToLower()}.{lastName.ToLower()}@{domains[random.Next(domains.Length)]}";
-                if (i % 5 == 0) age = random.Next(15, 20);
-                if (i % 8 == 0) salary = random.Next(100, 500);
-
-                var notes = string.Empty;
-                if (age > 50 && i % 3 == 0)
-                {
-                    notes = i % 2 == 0 ? "Skúsený zamestnanec" : "";
-                }
-
                 data.Add(new Dictionary<string, object?>
                 {
-                    ["Meno"] = firstName,
-                    ["Priezvisko"] = lastName,
-                    ["Vek"] = age,
-                    ["Email"] = email,
-                    ["Plat"] = salary,
-                    ["DatumNastupu"] = startDate,
-                    ["Aktívny"] = isActive,
-                    ["Poznámky"] = notes
+                    ["Meno"] = firstNames[random.Next(firstNames.Length)],
+                    ["Priezvisko"] = lastNames[random.Next(lastNames.Length)],
+                    ["Vek"] = random.Next(22, 65),
+                    ["Email"] = $"test{i}@example.com",
+                    ["Plat"] = random.Next(800, 8000)
                 });
             }
 
             return data;
         }
 
-        private void UpdateStatusBar()
+        private void UpdateStatusText(string message)
         {
             try
             {
-                StatusTextBlock.Text = "Pripravené";
+                StatusTextBlock.Text = message;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating status bar");
+                _logger.LogError(ex, "Error updating status text: {Message}", message);
             }
         }
 
@@ -425,9 +367,7 @@ namespace RpaWinUiComponents.Demo
                 builder.SetMinimumLevel(LogLevel.Debug);
             });
 
-            // OPRAVENÉ: Používam skutočnú extension metódu
             services.AddAdvancedWinUiDataGrid();
-
             return services.BuildServiceProvider();
         }
 
@@ -436,19 +376,6 @@ namespace RpaWinUiComponents.Demo
         #region Dialog Helpers
 
         private async Task ShowErrorDialog(string title, string message)
-        {
-            var dialog = new ContentDialog
-            {
-                Title = title,
-                Content = message,
-                CloseButtonText = "OK",
-                XamlRoot = this.Content.XamlRoot
-            };
-
-            await dialog.ShowAsync();
-        }
-
-        private async Task ShowInfoDialog(string title, string message)
         {
             var dialog = new ContentDialog
             {

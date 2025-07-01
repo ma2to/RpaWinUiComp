@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- RpaWinUiComponents.Demo/MainWindow.xaml - KOMPLETNE OPRAVENÝ -->
+<!-- RpaWinUiComponents.Demo/MainWindow.xaml - KOMPLETNE OPRAVENÝ pre WinUI 3 -->
 <Window
     x:Class="RpaWinUiComponents.Demo.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:RpaWinUiComponents.AdvancedWinUiDataGrid"
+    xmlns:local="using:RpaWinUiComponents.Demo"
     Title="RpaWinUiComponents Demo - Advanced DataGrid">
 
     <Grid>
@@ -110,9 +110,22 @@
             </Grid>
         </Border>
 
-        <!-- Main DataGrid -->
+        <!-- Main DataGrid - ZJEDNODUŠENÝ placeholder -->
         <Border Grid.Row="2" Background="White" BorderBrush="#BDC3C7" BorderThickness="1" Margin="8">
-            <controls:AdvancedWinUiDataGridControl x:Name="MainDataGrid"/>
+            <ScrollViewer ZoomMode="Disabled" 
+                          HorizontalScrollMode="Auto" 
+                          VerticalScrollMode="Auto">
+                <Grid>
+                    <TextBlock Text="DataGrid sa načíta po inicializácii..." 
+                               FontSize="16" 
+                               Foreground="#6C757D"
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"/>
+
+                    <!-- PLACEHOLDER pre DataGrid komponent -->
+                    <Border x:Name="DataGridPlaceholder" Background="Transparent"/>
+                </Grid>
+            </ScrollViewer>
         </Border>
 
         <!-- Status Bar -->

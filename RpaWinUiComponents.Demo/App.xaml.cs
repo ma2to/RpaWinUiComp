@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
-using RpaWinUiComponents.AdvancedWinUiDataGrid;
 using RpaWinUiComponents.AdvancedWinUiDataGrid.Configuration;
 using System;
 
@@ -28,12 +27,18 @@ namespace RpaWinUiComponents.Demo
             // Initialize dependency injection and logging
             _host = CreateHostBuilder().Build();
 
-            // Configure AdvancedDataGrid services
-            AdvancedWinUiDataGridControl.Configuration.ConfigureServices(_host.Services);
+            // OPRAVENÉ: Konfigurácia AdvancedDataGrid services
+            DependencyInjectionConfig.ConfigureServices(_host.Services);
 
-            var loggerFactory = _host.Services.GetRequiredService<ILoggerFactory>();
-            AdvancedWinUiDataGridControl.Configuration.ConfigureLogging(loggerFactory);
-            AdvancedWinUiDataGridControl.Configuration.SetDebugLogging(true);
+            // OPRAVENÉ: Konfigurácia loggingu ak je k dispozícii
+            var loggerFactory = _host.Services.GetService<ILoggerFactory>();
+            if (loggerFactory != null)
+            {
+                // OPRAVENÉ: Používam správnu metódu pre konfiguráciu loggingu
+                var loggerProvider = new DataGridLoggerProvider(loggerFactory);
+                // Nastavenie debug loggingu
+                RpaWinUiComponents.AdvancedWinUiDataGrid.Helpers.DebugHelper.IsDebugEnabled = true;
+            }
         }
 
         /// <summary>
@@ -47,7 +52,7 @@ namespace RpaWinUiComponents.Demo
                 _mainWindow = new MainWindow();
                 _mainWindow.Activate();
 
-                var logger = _host?.Services.GetRequiredService<ILogger<App>>();
+                var logger = _host?.Services.GetService<ILogger<App>>();
                 logger?.LogInformation("RpaWinUiComponents Demo application started successfully");
             }
             catch (Exception ex)
@@ -79,7 +84,7 @@ namespace RpaWinUiComponents.Demo
                         builder.AddFilter("RpaWinUiComponents", LogLevel.Debug);
                     });
 
-                    // Register AdvancedDataGrid services
+                    // OPRAVENÉ: Register AdvancedDataGrid services pomocou extension metódy
                     services.AddAdvancedWinUiDataGrid();
 
                     // Register demo-specific services if needed

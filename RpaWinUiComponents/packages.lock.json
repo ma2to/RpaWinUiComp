@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    "net8.0-windows10.0.26100": {
+    "net8.0-windows10.0.19041": {
       "Microsoft.Extensions.DependencyInjection": {
         "type": "Direct",
         "requested": "[9.0.6, )",
@@ -340,7 +340,7 @@
         "contentHash": "uWRgViw2yJAUyGxrzDLCc6fkzE2dZIoXxs8V6YjCujKsJuP0pnpYSlbm2/7tKd0SjBnMtwfDQhLenk3bXonVOA=="
       }
     },
-    "net8.0-windows10.0.26100/win-arm64": {
+    "net8.0-windows10.0.19041/win-arm64": {
       "Microsoft.WindowsAppSDK": {
         "type": "Direct",
         "requested": "[1.7.250606001, )",
@@ -367,7 +367,7 @@
         "contentHash": "uWRgViw2yJAUyGxrzDLCc6fkzE2dZIoXxs8V6YjCujKsJuP0pnpYSlbm2/7tKd0SjBnMtwfDQhLenk3bXonVOA=="
       }
     },
-    "net8.0-windows10.0.26100/win-x64": {
+    "net8.0-windows10.0.19041/win-x64": {
       "Microsoft.WindowsAppSDK": {
         "type": "Direct",
         "requested": "[1.7.250606001, )",
@@ -394,7 +394,7 @@
         "contentHash": "uWRgViw2yJAUyGxrzDLCc6fkzE2dZIoXxs8V6YjCujKsJuP0pnpYSlbm2/7tKd0SjBnMtwfDQhLenk3bXonVOA=="
       }
     },
-    "net8.0-windows10.0.26100/win-x86": {
+    "net8.0-windows10.0.19041/win-x86": {
       "Microsoft.WindowsAppSDK": {
         "type": "Direct",
         "requested": "[1.7.250606001, )",

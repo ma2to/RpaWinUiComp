@@ -17,11 +17,13 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
 {
     /// <summary>
     /// Hlavný wrapper komponent pre AdvancedWinUiDataGrid s konfigurovateľnou validáciou
+    /// OPRAVENÁ VERZIA - definuje všetky metódy ktoré sa používajú v MainWindow
     /// </summary>
     public class AdvancedWinUiDataGridControl : UserControl, IDisposable
     {
         private readonly AdvancedDataGridControl _internalView;
         private bool _disposed = false;
+        private bool _isInitialized = false;
 
         public AdvancedWinUiDataGridControl()
         {
@@ -93,10 +95,12 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
             try
             {
                 await _internalView.InitializeAsync(columns, validationRules, throttling, initialRowCount);
+                _isInitialized = true;
             }
             catch (Exception ex)
             {
                 OnErrorOccurred(new ComponentErrorEventArgs(ex, "InitializeAsync"));
+                throw;
             }
         }
 
@@ -108,6 +112,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
             try
             {
                 _internalView.Reset();
+                _isInitialized = false;
             }
             catch (Exception ex)
             {
@@ -126,11 +131,15 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
         {
             try
             {
+                if (!_isInitialized)
+                    throw new InvalidOperationException("Component must be initialized first");
+
                 await _internalView.LoadDataAsync(dataTable);
             }
             catch (Exception ex)
             {
                 OnErrorOccurred(new ComponentErrorEventArgs(ex, "LoadDataAsync"));
+                throw;
             }
         }
 
@@ -141,11 +150,15 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
         {
             try
             {
+                if (!_isInitialized)
+                    throw new InvalidOperationException("Component must be initialized first");
+
                 await _internalView.LoadDataAsync(data);
             }
             catch (Exception ex)
             {
                 OnErrorOccurred(new ComponentErrorEventArgs(ex, "LoadDataAsync"));
+                throw;
             }
         }
 
@@ -160,6 +173,9 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
         {
             try
             {
+                if (!_isInitialized)
+                    return new DataTable();
+
                 return await _internalView.ExportToDataTableAsync();
             }
             catch (Exception ex)
@@ -180,6 +196,9 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
         {
             try
             {
+                if (!_isInitialized)
+                    return false;
+
                 return await _internalView.ValidateAllRowsAsync();
             }
             catch (Exception ex)
@@ -200,11 +219,15 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
         {
             try
             {
+                if (!_isInitialized)
+                    return;
+
                 await _internalView.ClearAllDataAsync();
             }
             catch (Exception ex)
             {
                 OnErrorOccurred(new ComponentErrorEventArgs(ex, "ClearAllDataAsync"));
+                throw;
             }
         }
 
@@ -215,11 +238,15 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
         {
             try
             {
+                if (!_isInitialized)
+                    return;
+
                 await _internalView.RemoveEmptyRowsAsync();
             }
             catch (Exception ex)
             {
                 OnErrorOccurred(new ComponentErrorEventArgs(ex, "RemoveEmptyRowsAsync"));
+                throw;
             }
         }
 
@@ -230,6 +257,9 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
         {
             try
             {
+                if (!_isInitialized)
+                    return;
+
                 if (_internalView.ViewModel != null)
                 {
                     await _internalView.ViewModel.RemoveRowsByConditionAsync(columnName, condition);
@@ -238,6 +268,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
             catch (Exception ex)
             {
                 OnErrorOccurred(new ComponentErrorEventArgs(ex, "RemoveRowsByConditionAsync"));
+                throw;
             }
         }
 
@@ -248,6 +279,9 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid
         {
             try
             {
+                if (!_isInitialized)
+                    return 0;
+
                 if (_internalView.ViewModel != null)
                 {
                     return await _internalView.ViewModel.RemoveRowsByValidationAsync(customRules);
