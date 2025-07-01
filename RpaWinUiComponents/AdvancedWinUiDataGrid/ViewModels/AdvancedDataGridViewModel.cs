@@ -612,7 +612,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.ViewModels
                     IsReadOnly = column.IsReadOnly
                 };
 
-                // Subscribe to real-time validation
+                //Subscribe to real - time validation
                 cell.PropertyChanged += async (s, e) =>
                 {
                     if (e.PropertyName == nameof(DataGridCell.Value))
@@ -620,6 +620,7 @@ namespace RpaWinUiComponents.AdvancedWinUiDataGrid.ViewModels
                         await OnCellValueChangedRealTime(row, cell);
                     }
                 };
+
 
                 row.AddCell(column.Name, cell);
             }

@@ -1,7 +1,7 @@
-{
+﻿{
   "profiles": {
-    "RpaWinUiComponents.Demo (Package)": {
-      "commandName": "MsixPackage"
+    "RpaWinUiComponents.Demo": {
+      "commandName": "Project"
     },
     "RpaWinUiComponents.Demo (Unpackaged)": {
       "commandName": "Project"

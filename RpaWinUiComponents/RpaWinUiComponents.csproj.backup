@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
@@ -9,16 +10,12 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
 
-    <!-- ✅ FIX pre Windows App SDK kompatibilitu -->
+    <!-- ✅ FIX pre .NET 9 SDK -->
     <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
     <WindowsPackageType>None</WindowsPackageType>
     <EnableMsixTooling>false</EnableMsixTooling>
     <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
     <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
-    
-    <!-- ✅ Disable PRI generation for library -->
-    <EnableMrtResourcePackaging>false</EnableMrtResourcePackaging>
-    <UseWinUIModernResourceSystem>false</UseWinUIModernResourceSystem>
 
     <!-- ✅ Suppress warnings -->
     <NoWarn>$(NoWarn);CS8602;CS8603;CS8604;CS0628;CS1998</NoWarn>
@@ -46,4 +43,5 @@
       <DependentUpon>AdvancedDataGridControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
+
 </Project>

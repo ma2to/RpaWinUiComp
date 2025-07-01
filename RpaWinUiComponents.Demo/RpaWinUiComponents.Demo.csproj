@@ -1,46 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <UseWinUI>true</UseWinUI>
-    <EnableMsixTooling>false</EnableMsixTooling>
+    
+    <!-- ✅ Unpackaged deployment settings -->
     <WindowsPackageType>None</WindowsPackageType>
-    <SelfContained>true</SelfContained>
+    <EnableMsixTooling>false</EnableMsixTooling>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-    <EnableDefaultPageItems>false</EnableDefaultPageItems>
-    <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+    <SelfContained>true</SelfContained>
+    
+    <!-- ✅ Disable problematic features -->
+    <EnableMrtResourcePackaging>false</EnableMrtResourcePackaging>
+    <UseWinUIModernResourceSystem>false</UseWinUIModernResourceSystem>
+    <GenerateTemporaryStoreCertificate>false</GenerateTemporaryStoreCertificate>
   </PropertyGroup>
   
   <ItemGroup>
-    <!-- ✅ POUŽITE ProjectReference namiesto NuGet balíčka -->
     <!--<ProjectReference Include="..\RpaWinUiComponents\RpaWinUiComponents.csproj" />-->
-    
-    <!-- Ostatné dependencies -->
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.6" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
     <PackageReference Include="RpaWinUiComponents" Version="1.0.3" />
-    <PackageReference Include="System.Text.Json" Version="9.0.6" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Update="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 </Project>
