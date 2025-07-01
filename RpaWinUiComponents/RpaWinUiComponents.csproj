@@ -3,15 +3,22 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <RootNamespace>RpaWinUiComponents</RootNamespace>
-    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <UseWinUI>true</UseWinUI>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <UseRidGraph>true</UseRidGraph>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>RpaWinUiComponents</PackageId>
+    <PackageVersion>1.0.3</PackageVersion>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
-    <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+
+    <!-- ✅ FIX pre .NET 9 SDK -->
+    <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
+    <WindowsPackageType>None</WindowsPackageType>
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+
+    <!-- ✅ Suppress warnings -->
+    <NoWarn>$(NoWarn);CS8602;CS8603;CS8604;CS0628;CS1998</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,11 +32,9 @@
   <ItemGroup>
     <Page Include="AdvancedWinUiDataGrid\Views\AdvancedDataGridControl.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="AdvancedWinUiDataGrid\Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
 
@@ -38,11 +43,5 @@
       <DependentUpon>AdvancedDataGridControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
-
-  <PropertyGroup>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <NoWarn>$(NoWarn);1591;CS0227</NoWarn>
-    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
-  </PropertyGroup>
 
 </Project>

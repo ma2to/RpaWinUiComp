@@ -1,34 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <RootNamespace>RpaWinUiComponents.Demo</RootNamespace>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>false</EnableMsixTooling>
-    <Platforms>x86;x64;ARM64</Platforms>
-    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-    <UseRidGraph>true</UseRidGraph>
-    <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WindowsPackageType>None</WindowsPackageType>
     <SelfContained>true</SelfContained>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-    <!-- ✅ Suppress duplicitné Page warning -->
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
   </PropertyGroup>
-
+  
   <ItemGroup>
+    <!-- ✅ POUŽITE ProjectReference namiesto NuGet balíčka -->
+    <!--<ProjectReference Include="..\RpaWinUiComponents\RpaWinUiComponents.csproj" />-->
+    
+    <!-- Ostatné dependencies -->
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.6" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
-    <PackageReference Include="RpaWinUiComponents" Version="1.0.0" />
+    <PackageReference Include="RpaWinUiComponents" Version="1.0.3" />
     <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
-
-  <!-- ✅ Explicitne definované XAML súbory -->
+  
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -37,8 +34,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
-  <!-- ✅ Code-behind súbory -->
+  
   <ItemGroup>
     <Compile Update="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -47,9 +43,4 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
-
-  <!--<ItemGroup>
-    <ProjectReference Include="..\RpaWinUiComponents\RpaWinUiComponents.csproj" />
-  </ItemGroup>-->
-
 </Project>
